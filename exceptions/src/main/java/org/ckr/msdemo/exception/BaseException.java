@@ -1,21 +1,20 @@
 package org.ckr.msdemo.exception;
 
 
-
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class BaseException extends RuntimeException {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BaseException.class);
 
     private static final long serialVersionUID = 9112831069901766558L;
 
@@ -57,6 +56,8 @@ public class BaseException extends RuntimeException {
         buffer.append(numberFormat.format(this.hashCode()));
 
         exceptionID = buffer.toString();
+
+        LOG.debug("generated exception ID is {}", exceptionID);
     }
 
 
@@ -78,6 +79,15 @@ public class BaseException extends RuntimeException {
         super.printStackTrace(writer);
     }
 
+    @Override
+    public String getMessage() {
+        StringBuilder result = new StringBuilder();
 
+        result.append("Exception ID:")
+              .append(getExceptionID())
+              .append("\r\n")
+              .append(super.getMessage());
 
+        return result.toString();
+    }
 }
