@@ -1,6 +1,5 @@
 package org.ckr.msdemo.exception;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +17,7 @@ public class BaseException extends RuntimeException {
 
     private static final long serialVersionUID = 9112831069901766558L;
 
-    private String exceptionID;
+    private String exceptionId;
 
 
     protected BaseException() {
@@ -42,7 +41,7 @@ public class BaseException extends RuntimeException {
     }
 
     private void genExceptionId() {
-        if (exceptionID != null) {
+        if (exceptionId != null) {
             return;
         }
 
@@ -55,36 +54,36 @@ public class BaseException extends RuntimeException {
         numberFormat.setMaximumIntegerDigits(4);
         buffer.append(numberFormat.format(this.hashCode()));
 
-        exceptionID = buffer.toString();
+        exceptionId = buffer.toString();
 
-        LOG.debug("generated exception ID is {}", exceptionID);
+        LOG.debug("generated exception ID is {}", exceptionId);
     }
 
 
 
-    public String getExceptionID() {
-        return exceptionID;
+    public String getExceptionId() {
+        return exceptionId;
     }
 
 
     @Override
     public void printStackTrace(PrintStream stream) {
-        stream.append("Exception ID:" + getExceptionID());
+        stream.append("Exception ID:" + getExceptionId());
         super.printStackTrace(stream);
     }
 
     @Override
     public void printStackTrace(PrintWriter writer) {
-        writer.append("Exception ID:" + getExceptionID());
+        writer.append("Exception ID:" + getExceptionId());
         super.printStackTrace(writer);
     }
 
     @Override
     public String getMessage() {
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder(50);
 
         result.append("Exception ID:")
-              .append(getExceptionID())
+              .append(getExceptionId())
               .append("\r\n")
               .append(super.getMessage());
 

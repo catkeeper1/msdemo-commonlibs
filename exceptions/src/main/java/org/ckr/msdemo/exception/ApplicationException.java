@@ -8,7 +8,7 @@ public class ApplicationException extends BaseException {
 
     private static final long serialVersionUID = 1799296168836812569L;
 
-    List<ExceptionMessage> messageList = new ArrayList<>();
+    private List<ExceptionMessage> messageList = new ArrayList<>();
 
     public ApplicationException() {
         super();
@@ -39,15 +39,16 @@ public class ApplicationException extends BaseException {
     }
 
     private String printParams(ExceptionMessage expMsg) {
+
         if (expMsg == null || expMsg.getMessageParams() == null) {
             return null;
         }
 
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(50);
 
-        for(Object parm : expMsg.getMessageParams()) {
+        for (Object parm : expMsg.getMessageParams()) {
 
-            if(parm == null) {
+            if (parm == null) {
                 builder.append("null");
             } else {
                 builder.append(parm.toString());
@@ -60,27 +61,27 @@ public class ApplicationException extends BaseException {
         return builder.toString();
     }
 
-    private String getShortDescription() {
-        StringBuilder result = new StringBuilder();
+//    private String getShortDescription() {
+//        StringBuilder result = new StringBuilder(100);
+//
+//        result.append("exception ID:")
+//                .append(getExceptionId())
+//                .append("\r\n");
+//
+//        for (ExceptionMessage expMsg : messageList) {
+//            result.append("message code:" + expMsg.getMessageCode() + "  ")
+//                    .append("message params:" + printParams(expMsg) + " \r\n");
+//        }
+//
+//        if (messageList.isEmpty()) {
+//            result.append("\r\n");
+//        }
+//
+//        return result.toString();
+//
+//    }
 
-        result.append("exception ID:")
-                .append(getExceptionID())
-                .append("\r\n");
-
-        for (ExceptionMessage expMsg : messageList) {
-            result.append("message code:" + expMsg.getMessageCode() + "  ")
-                    .append("message params:" + printParams(expMsg) + " \r\n");
-        }
-
-        if(messageList.isEmpty()) {
-            result.append("\r\n");
-        }
-
-        return result.toString();
-
-    }
-
-    public void addMessage(String msgCode, Object[] params) {
+    final public void addMessage(String msgCode, Object[] params) {
 
         ExceptionMessage expMsg = new ExceptionMessage(msgCode, params);
 
@@ -99,11 +100,15 @@ public class ApplicationException extends BaseException {
 
         /*public ExceptionMessage(){
             super();
-    	}*/
+        }*/
 
         public ExceptionMessage(String code, Object[] params) {
             messageCode = code;
-            messageParams = params;
+            if (params != null) {
+                messageParams = new Object[params.length];
+                System.arraycopy(params, 0, this.messageParams, 0, params.length);
+            }
+
         }
 
         public String getMessageCode() {
@@ -111,7 +116,13 @@ public class ApplicationException extends BaseException {
         }
 
         public Object[] getMessageParams() {
-            return messageParams;
+
+            if (this.messageParams != null) {
+                Object[] result = new Object[this.messageParams.length];
+                System.arraycopy(this.messageParams, 0, result, 0, this.messageParams.length);
+            }
+
+            return null;
         }
 
     }

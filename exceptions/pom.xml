@@ -13,11 +13,14 @@
 
     <artifactId>exceptions</artifactId>
 
+    <properties>
+        <msdemo.skipReportGen>true</msdemo.skipReportGen>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <scope>provided</scope>
         </dependency>
 
     </dependencies>
