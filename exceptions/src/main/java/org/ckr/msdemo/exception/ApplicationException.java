@@ -118,8 +118,13 @@ public class ApplicationException extends BaseException {
         public Object[] getMessageParams() {
 
             if (this.messageParams != null) {
-                Object[] result = new Object[this.messageParams.length];
-                System.arraycopy(this.messageParams, 0, result, 0, this.messageParams.length);
+                int arrayLen = this.messageParams.length;
+
+                Object[] result = new Object[arrayLen];
+                Object[] srcParams = this.messageParams;
+
+                System.arraycopy(srcParams, 0, result, 0, arrayLen);
+                return result;
             }
 
             return null;
