@@ -5,7 +5,7 @@ public class SystemException extends BaseException {
 
     private static final long serialVersionUID = 1087557111023898204L;
 
-    protected SystemException() {
+    protected SystemException() { 
         super();
     }
 
