@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This exception should be used when an user message should be shown to end users to explain what action should be
+ * taken. For example if an mandatory is not input, program can throw an instance of this class and include an message
+ * to prompt use to key in that mandatory field.
+ */
 public class ApplicationException extends BaseException {
 
     private static final long serialVersionUID = 1799296168836812569L;
@@ -61,27 +66,33 @@ public class ApplicationException extends BaseException {
         return builder.toString();
     }
 
-//    private String getShortDescription() {
-//        StringBuilder result = new StringBuilder(100);
-//
-//        result.append("exception ID:")
-//                .append(getExceptionId())
-//                .append("\r\n");
-//
-//        for (ExceptionMessage expMsg : messageList) {
-//            result.append("message code:" + expMsg.getMessageCode() + "  ")
-//                    .append("message params:" + printParams(expMsg) + " \r\n");
-//        }
-//
-//        if (messageList.isEmpty()) {
-//            result.append("\r\n");
-//        }
-//
-//        return result.toString();
-//
-//    }
+    /*
+    private String getShortDescription() {
+        StringBuilder result = new StringBuilder(100);
 
-    final public void addMessage(String msgCode, Object[] params) {
+        result.append("exception ID:")
+                .append(getExceptionId())
+                .append("\r\n");
+
+        for (ExceptionMessage expMsg : messageList) {
+            result.append("message code:" + expMsg.getMessageCode() + "  ")
+                    .append("message params:" + printParams(expMsg) + " \r\n");
+        }
+
+        if (messageList.isEmpty()) {
+            result.append("\r\n");
+        }
+
+        return result.toString();
+
+    }*/
+
+    /**
+     * Add one more user message to this exception.
+     * @param msgCode The message code which is used to retrive message from messageSource for i18n.
+     * @param params  The values for parameters inside the message template.
+     */
+    public final void addMessage(String msgCode, Object[] params) {
 
         ExceptionMessage expMsg = new ExceptionMessage(msgCode, params);
 
@@ -89,6 +100,12 @@ public class ApplicationException extends BaseException {
 
     }
 
+    /**
+     * This is an internal class used by {@link ApplicationException} to store user message data.
+     * Every instance of this class represent one user message.
+     *
+     * @see ApplicationException
+     */
     public static class ExceptionMessage implements Serializable {
 
 
@@ -102,6 +119,11 @@ public class ApplicationException extends BaseException {
             super();
         }*/
 
+        /**
+         *
+         * @param code The message code that will be used to retrieve user message from messageSource object.
+         * @param params  The values of parameters of the message template.
+         */
         public ExceptionMessage(String code, Object[] params) {
             messageCode = code;
             if (params != null) {
@@ -111,10 +133,18 @@ public class ApplicationException extends BaseException {
 
         }
 
+        /**
+         * The get method for message code.
+         * @return The message code that will be used to retrieve user message from messageSource object.
+         */
         public String getMessageCode() {
             return messageCode;
         }
 
+        /**
+         * The get method for message params.
+         * @return the values of parameters of message template.
+         */
         public Object[] getMessageParams() {
 
             if (this.messageParams != null) {
