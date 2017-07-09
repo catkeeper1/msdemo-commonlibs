@@ -22,7 +22,15 @@
 
     <modules>
         <module>exceptions</module>
+        <module>pagination</module>
     </modules>
+
+    <build>
+        <plugins>
+
+        </plugins>
+    </build>
+
 
     <reporting>
         <plugins>
@@ -33,6 +41,7 @@
                 <configuration>
                     <sourceDirectories>
                         <directory>${project.basedir}/exceptions/src/main/java</directory>
+                        <directory>${project.basedir}/pagination/src/main/java</directory>
                     </sourceDirectories>
 
                 </configuration>
