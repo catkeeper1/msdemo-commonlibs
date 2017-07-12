@@ -50,10 +50,16 @@ public class PaginationContext {
 
 
         QueryRequest queryRequest = new QueryRequest();
-        queryRequest.setStart((long) 0);
 
         queryRequest = parsePageRange(queryRequest, request);
+
+        if (queryRequest.getStart() == null) {
+            return;
+        }
+
         queryRequest = parseSortBy(queryRequest, request);
+
+        LOG.debug("queryRequest = {}", queryRequest);
 
         requestInfo.set(queryRequest);
 
@@ -95,10 +101,18 @@ public class PaginationContext {
 
     public static void clearContextData() {
 
-        LOG.debug("clear data in thread local.");
+        if (requestInfo.get() != null) {
+            LOG.debug("clear request info in thread local.");
+            requestInfo.remove();
 
-        requestInfo.remove();
-        responseInfo.remove();
+        }
+
+        if (responseInfo.get() != null) {
+            LOG.debug("clear response info in thread local.");
+            responseInfo.remove();
+        }
+
+
     }
 
     private static QueryRequest parsePageRange(QueryRequest range, HttpServletRequest webRequest) {
@@ -255,7 +269,14 @@ public class PaginationContext {
             this.sortCriteriaList = sortCriteriaList;
         }
 
-
+        @Override
+        public String toString() {
+            return "QueryRequest{" +
+                    "start=" + start +
+                    ", end=" + end +
+                    ", sortCriteriaList=" + sortCriteriaList +
+                    '}';
+        }
     }
 
     /**
@@ -288,7 +309,13 @@ public class PaginationContext {
             this.fieldName = fieldName;
         }
 
-
+        @Override
+        public String toString() {
+            return "SortCriteria{" +
+                    "isAsc=" + isAsc +
+                    ", fieldName='" + fieldName + '\'' +
+                    '}';
+        }
     }
 
     /**
