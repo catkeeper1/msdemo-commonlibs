@@ -27,6 +27,14 @@ public class PaginationContextTest {
     HttpServletRequest httpServletRequest;
 
     @Test
+    public void testLoadAll() {
+        System.out.println(PaginationContext.class.getName());
+        System.out.println(PaginationInterceptor.class.getName());
+        System.out.println(PaginationInterceptorConfig.class.getName());
+        System.out.println(RestPaginationResponseAdvice.class.getName());
+    }
+
+    @Test
     public void testParseRestPaginationParameters() {
 
         doTestParseRestPaginationParameters("items=0-100",
