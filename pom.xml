@@ -18,7 +18,6 @@
 
     <properties>
         <msdemo.skipReportGen>false</msdemo.skipReportGen>
-        <jmockit.version>1.33</jmockit.version>
     </properties>
 
     <modules>
