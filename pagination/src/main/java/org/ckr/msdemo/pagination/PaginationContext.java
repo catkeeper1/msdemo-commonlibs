@@ -21,10 +21,10 @@ public class PaginationContext {
     private static final Logger LOG = LoggerFactory.getLogger(PaginationContext.class);
 
     private static final ThreadLocal<QueryRequest> requestInfo =
-            new ThreadLocal<>();
+        new ThreadLocal<>();
 
     private static final ThreadLocal<QueryResponse> responseInfo =
-            new ThreadLocal<>();
+        new ThreadLocal<>();
 
 
     private static Long parseNum(String numStr) {
@@ -42,7 +42,7 @@ public class PaginationContext {
     public static void parseRestPaginationParameters() {
 
         HttpServletRequest request =
-                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
         if (request == null) {
             return;
@@ -74,8 +74,8 @@ public class PaginationContext {
         }
 
         String headerContent = "items " + queryResponse.getStart() + "-"
-                + (queryResponse.getStart() + queryResponse.getEnd()) + "/"
-                + queryResponse.getTotal();
+            + (queryResponse.getStart() + queryResponse.getEnd()) + "/"
+            + queryResponse.getTotal();
 
 
         LOG.debug("Content-Range={}", headerContent);
@@ -271,11 +271,11 @@ public class PaginationContext {
 
         @Override
         public String toString() {
-            return "QueryRequest{" +
-                    "start=" + start +
-                    ", end=" + end +
-                    ", sortCriteriaList=" + sortCriteriaList +
-                    '}';
+            return "QueryRequest{"
+                + "start=" + start
+                + ", end=" + end
+                + ", sortCriteriaList=" + sortCriteriaList
+                + '}';
         }
     }
 
@@ -311,10 +311,10 @@ public class PaginationContext {
 
         @Override
         public String toString() {
-            return "SortCriteria{" +
-                    "isAsc=" + isAsc +
-                    ", fieldName='" + fieldName + '\'' +
-                    '}';
+            return "SortCriteria{"
+                + "isAsc=" + isAsc
+                + ", fieldName='" + fieldName + '\''
+                + '}';
         }
     }
 
@@ -323,8 +323,6 @@ public class PaginationContext {
      * of query result.  should return an instance of this class
      * and the  will use this object to
      * generate an response that can be returned by a Spring MVC controller method.
-     *
-     *
      */
     public static class QueryResponse {
 

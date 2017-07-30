@@ -18,11 +18,12 @@ public class PaginationInterceptor implements HandlerInterceptor {
      * @param request
      * @param response
      * @param handler
-     * @return
+     * @return boolean
      * @throws Exception
      */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+        throws Exception {
 
         PaginationContext.parseRestPaginationParameters();
 
@@ -30,7 +31,8 @@ public class PaginationInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+                           ModelAndView modelAndView) throws Exception {
 
     }
 
@@ -45,7 +47,8 @@ public class PaginationInterceptor implements HandlerInterceptor {
      * @throws Exception
      */
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+        throws Exception {
         PaginationContext.clearContextData();
     }
 }
