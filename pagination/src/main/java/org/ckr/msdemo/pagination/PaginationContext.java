@@ -74,7 +74,7 @@ public class PaginationContext {
         }
 
         String headerContent = "items " + queryResponse.getStart() + "-"
-            + (queryResponse.getStart() + queryResponse.getEnd()) + "/"
+            + queryResponse.getEnd() + "/"
             + queryResponse.getTotal();
 
 
@@ -85,9 +85,8 @@ public class PaginationContext {
 
     }
 
-    public static void setResponseInfo(Long start, Long size, Long total) {
-        QueryResponse response = new QueryResponse(start, start + size - 1, total);
-
+    public static void setResponseInfo(Long start, Long end, Long total) {
+        QueryResponse response = new QueryResponse(start, end, total);
         responseInfo.set(response);
     }
 
@@ -346,11 +345,25 @@ public class PaginationContext {
          */
         private Long total;
 
+        private List<Object> content;
+
+        public List<Object> getContent() {
+            return content;
+        }
+
+        public void setContent(List<Object> content) {
+            this.content = content;
+        }
 
         public QueryResponse(Long start, Long end, Long total) {
             this.start = start;
             this.end = end;
             this.total = total;
+        }
+
+        public QueryResponse(Long start, Long end) {
+            this.start = start;
+            this.end = end;
         }
 
         public Long getStart() {
@@ -371,6 +384,13 @@ public class PaginationContext {
         }
 
 
+        public void setEnd(Long end) {
+            this.end = end;
+        }
+
+        public void setTotal(Long total) {
+            this.total = total;
+        }
     }
 
 }
