@@ -9,6 +9,10 @@ public class SystemException extends BaseException {
         super();
     }
 
+    protected SystemException(String shortDescription, boolean generateExpId) {
+        super(shortDescription, generateExpId);
+    }
+
     public SystemException(String arg0, Throwable arg1) {
         super(arg0, arg1);
     }
@@ -20,6 +24,5 @@ public class SystemException extends BaseException {
     public SystemException(Throwable arg0) {
         super(arg0);
     }
-
 
 }

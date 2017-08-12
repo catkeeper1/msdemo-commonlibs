@@ -28,12 +28,19 @@ public class BaseException extends RuntimeException {
 
     private static final long serialVersionUID = 9112831069901766558L;
 
-    private String exceptionId;
+    protected String exceptionId;
 
 
     protected BaseException() {
         super();
         genExceptionId();
+    }
+
+    protected BaseException(String shortDescription, boolean generateExpId) {
+        super(shortDescription);
+        if (generateExpId) {
+            genExceptionId();
+        }
     }
 
     protected BaseException(String arg0, Throwable arg1) {

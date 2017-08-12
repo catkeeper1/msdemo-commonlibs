@@ -103,13 +103,20 @@ public final class RestExceptionHandler {
             ApplicationException appExp = (ApplicationException) be;
             for (int i = 0; i < appExp.getMessageList().size(); i++) {
                 ApplicationException.ExceptionMessage expMsg = appExp.getMessageList().get(i);
-                LOG.debug("return exception message with msg code {}", expMsg.getMessageCode());
+                LOG.debug("return exception message with msg code = {} params = {} message = {}",
+                        expMsg.getMessageCode(),
+                        expMsg.getMessageParams(),
+                        expMsg.getMessage());
 
-                errorResponse.addMessage(expMsg.getMessageCode(),
-                        messageSource.getMessage(expMsg.getMessageCode(),
-                                expMsg.getMessageParams(),
-                                locale));
+                String msg = expMsg.getMessage();
 
+                if (msg == null || "".equals(msg.trim())) {
+                    msg = messageSource.getMessage(expMsg.getMessageCode(),
+                            expMsg.getMessageParams(),
+                            locale);
+                }
+
+                errorResponse.addMessage(expMsg.getMessageCode(), msg);
 
             }
         }
