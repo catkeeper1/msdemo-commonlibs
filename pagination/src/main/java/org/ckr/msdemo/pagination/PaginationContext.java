@@ -345,14 +345,8 @@ public class PaginationContext {
          */
         private Long total;
 
-        private List<Object> content;
-
-        public List<Object> getContent() {
-            return content;
-        }
-
-        public void setContent(List<Object> content) {
-            this.content = content;
+        public QueryResponse() {
+            super();
         }
 
         public QueryResponse(Long start, Long end, Long total) {
