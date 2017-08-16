@@ -10,9 +10,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -27,6 +25,7 @@ public class PaginationContextTest {
 
     private @Mocked
     HttpServletRequest httpServletRequest;
+
 
     @Test
     public void testLoadAll() {
@@ -70,8 +69,6 @@ public class PaginationContextTest {
 
             List<String> rangeValues = new ArrayList<>();
             rangeValues.add(rangeStr);
-
-
             httpServletRequest.getHeaders("Range");
             times = 1;
             result = Collections.enumeration(rangeValues);
@@ -81,7 +78,6 @@ public class PaginationContextTest {
             httpServletRequest.getHeaders("SortBy");
             times = 1;
             result = Collections.enumeration(sortedByValues);
-
         }};
 
         PaginationContext.parseRestPaginationParameters();
@@ -100,5 +96,7 @@ public class PaginationContextTest {
             assertThat(sortCriterial.getFieldName()).isEqualTo(sortedField[i]);
 
         }
+
+
     }
 }
