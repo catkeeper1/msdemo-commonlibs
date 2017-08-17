@@ -5,7 +5,9 @@ import java.io.Serializable;
 /**
  * Created by yukai.a.lin on 8/15/2017.
  */
-public class UserWithRole {
+public class UserWithRole implements Serializable{
+    private static final long serialVersionUID = -3615936503981341238L;
+
     public  UserWithRole(){
         super();
     }

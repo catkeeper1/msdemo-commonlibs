@@ -64,20 +64,13 @@ public class JpaRestPaginationService {
                                final Map<String, Object> params,
                                final Function<Object[], R> mapper,
                                final Long maxNoRecordsPerPage) {
-        LOG.info("query1");
         QueryRequest queryRequest = PaginationContext.getQueryRequest();
-        LOG.info("query2");
         queryRequest = this.adjustRange(queryRequest, maxNoRecordsPerPage);
-        LOG.info("query3");
-
         String queryStr = adjustQueryString(hql, params);
-
         QueryResponse response = new QueryResponse();
-        LOG.info("query4" + queryStr);
         List<R> resultList = doQueryContent(response, queryRequest, queryStr, params, mapper);
         doQueryTotalNoRecords(response, resultList.size(), queryRequest, queryStr, params);
         PaginationContext.setResponseInfo(response.getStart(), response.getEnd() ,response.getTotal());
-        LOG.info("query5");
         return resultList;
     }
 
@@ -107,7 +100,6 @@ public class JpaRestPaginationService {
         String queryString = appendSortCriteria(queryStr, request);
 
         LOG.debug("get data HQL:{}", queryString);
-        //Query query = (Query) entityManager.createQuery(queryString);
         Query query = entityManager.createQuery(queryString);
         setQueryParameter(query, params);
         if (request != null && request.getStart() != null) {
@@ -117,10 +109,7 @@ public class JpaRestPaginationService {
             query.setMaxResults((int) (request.getEnd() - request.getStart()) + 1);
         }
 
-
-
         List rawResultList = query.getResultList();
-
         List<R> resultList = this.convertRawListToTargetList(rawResultList, mapper);
 
 
@@ -160,15 +149,12 @@ public class JpaRestPaginationService {
     }
 
     private QueryRequest adjustRange(QueryRequest request, Long maxNoRecordsPerPage) {
-        LOG.info("adjustRange1");
         if (request == null) {
             return null;
         }
-        LOG.info("adjustRange2");
         if (request.getStart() == null) {
             request.setStart((long) 0);
         }
-        LOG.info("adjustRange3");
         if (maxNoRecordsPerPage != null) {
             if (request.getEnd() == null || request.getEnd() - request.getStart() > maxNoRecordsPerPage - 1) {
                 //make sure the total number records will not exceed the maxNoRecordPerPage
@@ -201,7 +187,6 @@ public class JpaRestPaginationService {
 
         response.setTotal((Long) query.getSingleResult());
         LOG.info("getContent = {}", contentSize);
-
         LOG.debug("total number of records {}", response.getTotal());
         return;
     }

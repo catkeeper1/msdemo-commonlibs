@@ -2,6 +2,9 @@ package org.ckr.msdemo.pagination;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.ckr.msdemo.pagination.entity.UserWithRole;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -18,6 +21,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 /**
  * Created by yukai.a.lin on 8/14/2017.
  */
@@ -33,101 +38,65 @@ public class JpaRestPaginationServiceTest {
 
     private static Logger LOG = LoggerFactory.getLogger(JpaRestPaginationService.class);
 
-
-    @Test
-    public void testJpaservice() throws Exception {
-        String url = "http://localhost:" + port + "/user/queryUsersWithRoles?userName=&userDesc=";
+    public void testTemplate(String userName, String userDesc, String range, String SortBy,
+                             int length, String firstName, int statusCode) {
+        String url = "http://localhost:" + port + "/user/queryUsersWithRoles?userName=" + userName + "&userDesc=" + userDesc;
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Range", "items=1-10");
-        headers.add("SortBy", "-userName");
+        headers.add("Range", range);
+        headers.add("SortBy", SortBy);
         headers.setContentType(MediaType.TEXT_PLAIN);
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
+        ResponseEntity<UserWithRole[]> response = testRestTemplate.exchange(url, HttpMethod.GET, entity, UserWithRole[].class);
+        UserWithRole[] userWithRoles = response.getBody();
 
-        ResponseEntity<String> response = testRestTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        String objects = response.getBody();
-        LOG.info(objects);
+        for (UserWithRole userWithRole :
+            userWithRoles) {
+            LOG.info(userWithRole.toString());
+        }
+        assertThat(userWithRoles.length).isEqualTo(length);
+        if(userWithRoles != null && userWithRoles.length > 0){
+            assertThat(userWithRoles[0].getUserName()).isEqualTo(firstName);
+        }
+
         MediaType contentType1 = response.getHeaders().getContentType();
         LOG.info(contentType1.toString());
-        LOG.info(contentType1.getSubtype());
-        LOG.info(contentType1.getType());
-        LOG.info(contentType1.getCharset().displayName());
         HttpStatus statusCode1 = response.getStatusCode();
         LOG.info("statusCode is {}", statusCode1.toString());
-        assertThat(statusCode1.value()).isEqualTo(200);
-        LOG.info("-----------------------------------------");
-        LOG.info("-----------------------------------------");
-
-        ResponseEntity<String> responseEntity = testRestTemplate.getForEntity("http://localhost:" + port
-            + "/user/queryUsersWithRoles?userName=&userDesc=", String.class);
-        String body = responseEntity.getBody();
-//        for (UserWithRole userWithRole :
-//            objects) {
-        LOG.info(body);
-//        }
-        MediaType contentType = responseEntity.getHeaders().getContentType();
-        LOG.info(contentType.toString());
-        LOG.info(contentType.getSubtype());
-        LOG.info(contentType.getType());
-        LOG.info(contentType.getCharset().displayName());
-        HttpStatus statusCode = responseEntity.getStatusCode();
-        LOG.info("statusCode is {}", statusCode.toString());
-        assertThat(statusCode.value()).isEqualTo(200);
-
+        assertThat(statusCode1.value()).isEqualTo(statusCode);
     }
 
-//    @Test
-//    public void testfindAlluser() {
-//        Query query = entityManagerFactory
-//            .createEntityManager()
-//            .createQuery("select u.userName, u.userDescription, u.locked, g.roleCode, g.roleDescription from User u left join u.roles as g where 1=1");
-//        List<UserWithRole> userWithRoles = (List<UserWithRole>)query.getResultList();
-//        for (UserWithRole user:
-//             userWithRoles) {
-//            LOG.info(user.toString());
-//        }
-//    }
-//
-//    @Test
-//    public void testAdjustQueryStringAll() {
-//        String rawQuery = "select u.a, u.b from User u where 1=1 /*userName| and u.Name = :userName */ /*Desc| and u.Description like :Desc */";
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("userName", "abc");
-//        params.put("Desc", "def");
-//        String parsedQuery = JpaRestPaginationService.adjustQueryString(rawQuery, params);
-//        assertThat(parsedQuery).isEqualTo("select u.a, u.b from User u where 1=1  and u.Name = :userName   and u.Description like :Desc ");
-//    }
-//
-//    @Test
-//    public void testAdjustQueryStringPartial() {
-//        String rawQuery = "select u.a, u.b from User u where 1=1 /*userName| and u.Name = :userName */ /*Desc| and u.Description like :Desc */";
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("userName", "abc");
-//        String parsedQuery = JpaRestPaginationService.adjustQueryString(rawQuery, params);
-//        assertThat(parsedQuery).contains("select u.a, u.b from User u where 1=1  and u.Name = :userName");
-//    }
-//
-//    @Test
-//    public void testAdjustQueryStringNone() {
-//        String rawQuery = "select u.a, u.b from User u where 1=1 /*userName| and u.Name = :userName */ /*Desc| and u.Description like :Desc */";
-//        Map<String, Object> params = new HashMap<>();
-//        String parsedQuery = JpaRestPaginationService.adjustQueryString(rawQuery, params);
-//        assertThat(parsedQuery).contains("select u.a, u.b from User u where 1=1");
-//    }
+    @Test
+    public void testSample(){
+        this.testTemplate("", "","items=1-20", "-userName",
+            15, "DEF", 200);
+    }
+    @Test
+    public void testPageSize(){
+        this.testTemplate("", "","items=1-14", "-userName",
+            14, "DEF", 200);
+    }
+    @Test
+    public void testOrder(){
+        this.testTemplate("", "","items=1-20", "+userName",
+            15, "ABC", 200);
+    }
+    @Test
+    public void testUserName(){
+        this.testTemplate("ABC", "","items=1-20", "-userName",
+            3, "ABC", 200);
+    }
 
+    @Test
+    public void testUserDesc(){
+        this.testTemplate("", "DEF","items=1-20", "-userName",
+            1, "DEF", 200);
+    }
 
-//    @Test
-//    public void doQueryTest() {
-//        List<UserWithRole> result = this.testQuery("ABC4", "ABC", "items=1-10", "");
-//        LOG.info("query result is {}", result);
-//        assertThat(result.size()).isEqualTo(2);
-//        assertThat(result.get(0).getUserName()).isEqualTo("ABC4");
-//    }
-//
-//    @Test
-//    public void findAllTest() {
-//        List<User> users = userRepository.findAll();
-//        assertThat(users.size()).isEqualTo(8);
-//    }
+    @Test
+    public void testNoRecord(){
+        this.testTemplate("a", "","items=1-20", "-userName",
+            0, "DEF", 200);
+    }
 }
