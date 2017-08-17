@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -38,13 +39,17 @@ public class JpaRestPaginationServiceTest {
 
     private static Logger LOG = LoggerFactory.getLogger(JpaRestPaginationService.class);
 
-    public void testTemplate(String userName, String userDesc, String range, String SortBy,
+    public void testTemplate(String userName, String userDesc, String range, String sortBy,
                              int length, String firstName, int statusCode) {
         String url = "http://localhost:" + port + "/user/queryUsersWithRoles?userName=" + userName + "&userDesc=" + userDesc;
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Range", range);
-        headers.add("SortBy", SortBy);
+        if (!StringUtils.isEmpty(range)){
+            headers.add("Range", range);
+        }
+        if (!StringUtils.isEmpty(sortBy)){
+            headers.add("SortBy", sortBy);
+        }
         headers.setContentType(MediaType.TEXT_PLAIN);
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
@@ -56,7 +61,7 @@ public class JpaRestPaginationServiceTest {
             LOG.info(userWithRole.toString());
         }
         assertThat(userWithRoles.length).isEqualTo(length);
-        if(userWithRoles != null && userWithRoles.length > 0){
+        if(userWithRoles != null && userWithRoles.length > 0 && !StringUtils.isEmpty(sortBy)){
             assertThat(userWithRoles[0].getUserName()).isEqualTo(firstName);
         }
 
@@ -98,5 +103,17 @@ public class JpaRestPaginationServiceTest {
     public void testNoRecord(){
         this.testTemplate("a", "","items=1-20", "-userName",
             0, "DEF", 200);
+    }
+
+    @Test
+    public void testNoOrder(){
+        this.testTemplate("", "","items=1-20", "",
+            15, "", 200);
+    }
+
+    @Test
+    public void testLimit(){
+        this.testTemplate("", "","", "",
+            15, "", 200);
     }
 }
