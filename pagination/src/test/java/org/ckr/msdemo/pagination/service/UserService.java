@@ -1,6 +1,7 @@
 package org.ckr.msdemo.pagination.service;
 
 import org.ckr.msdemo.pagination.JpaRestPaginationService;
+import org.ckr.msdemo.pagination.SpringUtil;
 import org.ckr.msdemo.pagination.entity.UserWithRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +21,6 @@ import java.util.function.Function;
 public class UserService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
-
-    @Autowired
-    private JpaRestPaginationService jpaRestPaginationService;
 
     public List<UserWithRole> queryUsersWithRoles(String userName, String userDesc) {
         Map<String, Object> params = new HashMap<String, Object>();
@@ -57,6 +55,7 @@ public class UserService {
 
 
         };
+        JpaRestPaginationService jpaRestPaginationService = (JpaRestPaginationService) SpringUtil.getBean(JpaRestPaginationService.class);
         List<UserWithRole> result = jpaRestPaginationService.query(queryStr, params, mapper);
 
         LOG.debug("pagination query result {}", result);

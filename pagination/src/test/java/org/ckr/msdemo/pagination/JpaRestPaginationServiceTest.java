@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -53,16 +54,18 @@ public class JpaRestPaginationServiceTest {
         headers.setContentType(MediaType.TEXT_PLAIN);
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-        ResponseEntity<UserWithRole[]> response = testRestTemplate.exchange(url, HttpMethod.GET, entity, UserWithRole[].class);
-        UserWithRole[] userWithRoles = response.getBody();
+        ParameterizedTypeReference<List<UserWithRole>> userWithRoleBean = new ParameterizedTypeReference<List<UserWithRole>>() {};
+        ResponseEntity<List<UserWithRole>> response = testRestTemplate.exchange(url, HttpMethod.GET, entity, userWithRoleBean);
+
+        List<UserWithRole> userWithRoles = response.getBody();
 
         for (UserWithRole userWithRole :
             userWithRoles) {
             LOG.info(userWithRole.toString());
         }
-        assertThat(userWithRoles.length).isEqualTo(length);
-        if(userWithRoles != null && userWithRoles.length > 0 && !StringUtils.isEmpty(sortBy)){
-            assertThat(userWithRoles[0].getUserName()).isEqualTo(firstName);
+        assertThat(userWithRoles.size()).isEqualTo(length);
+        if(userWithRoles != null && userWithRoles.size() > 0 && !StringUtils.isEmpty(sortBy)){
+            assertThat(userWithRoles.get(0).getUserName()).isEqualTo(firstName);
         }
 
         MediaType contentType1 = response.getHeaders().getContentType();

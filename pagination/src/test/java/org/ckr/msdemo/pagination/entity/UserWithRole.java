@@ -1,16 +1,14 @@
 package org.ckr.msdemo.pagination.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 
 /**
  * Created by yukai.a.lin on 8/15/2017.
  */
-public class UserWithRole implements Serializable{
+public class UserWithRole implements Serializable {
     private static final long serialVersionUID = -3615936503981341238L;
-
-    public  UserWithRole(){
-        super();
-    }
     private String userName;
     private String userDescription;
     private String password;

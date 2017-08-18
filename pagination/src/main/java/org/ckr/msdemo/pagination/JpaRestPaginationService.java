@@ -24,13 +24,9 @@ import javax.persistence.Query;
  * Before it is used, please register this as a bean in Spring container and inject a valid session factory. Then,
  * call {@link JpaRestPaginationService#query(String, Map, Function, Long)} to do query.
  */
-@Service
 public class JpaRestPaginationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JpaRestPaginationService.class);
-
-    @Autowired
-    private EntityManager entityManager;
 
     /**
      * Do query base on a HQL. <br>
@@ -100,6 +96,7 @@ public class JpaRestPaginationService {
         String queryString = appendSortCriteria(queryStr, request);
 
         LOG.debug("get data HQL:{}", queryString);
+        EntityManager entityManager = (EntityManager) SpringUtil.getBean(EntityManager.class);
         Query query = entityManager.createQuery(queryString);
         setQueryParameter(query, params);
         if (request != null && request.getStart() != null) {
@@ -181,6 +178,7 @@ public class JpaRestPaginationService {
 
         LOG.debug("get total no of records HQL:{}", queryString);
 
+        EntityManager entityManager = (EntityManager) SpringUtil.getBean(EntityManager.class);
         Query query = (Query) entityManager.createQuery(queryString);
 
         setQueryParameter(query, params);
