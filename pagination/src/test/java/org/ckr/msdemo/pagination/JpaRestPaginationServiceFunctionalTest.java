@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.ckr.msdemo.pagination.JpaRestPaginationService;
 import org.ckr.msdemo.pagination.entity.UserWithRole;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,7 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class JpaRestPaginationServiceTest {
+public class JpaRestPaginationServiceFunctionalTest {
 
     @Autowired
     TestRestTemplate testRestTemplate;

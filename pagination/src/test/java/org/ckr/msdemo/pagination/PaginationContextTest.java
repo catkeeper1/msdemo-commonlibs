@@ -4,6 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import mockit.Expectations;
 import mockit.Mocked;
+import org.ckr.msdemo.pagination.PaginationContext;
+import org.ckr.msdemo.pagination.PaginationInterceptor;
+import org.ckr.msdemo.pagination.PaginationInterceptorConfig;
+import org.ckr.msdemo.pagination.RestPaginationResponseAdvice;
 import org.junit.Test;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

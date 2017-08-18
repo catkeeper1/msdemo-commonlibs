@@ -15,11 +15,11 @@ public class PaginationInterceptor implements HandlerInterceptor {
      * This method is used to trigger {@link PaginationContext#parseRestPaginationParameters()} to parse
      * the patination request info from HTTP request.
      *
-     * @param request
-     * @param response
-     * @param handler
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param handler handler
      * @return boolean
-     * @throws Exception
+     * @throws Exception Exception
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -40,11 +40,11 @@ public class PaginationInterceptor implements HandlerInterceptor {
      * This method will call {@link PaginationContext#clearContextData()} to make sure the data stored in
      * thread local in PaginationContext is cleared before the thread is released back to the pool.
      *
-     * @param request
-     * @param response
-     * @param handler
-     * @param ex
-     * @throws Exception
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param handler handler
+     * @param ex Exception
+     * @throws Exception Exception
      */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)

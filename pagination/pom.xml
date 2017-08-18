@@ -12,7 +12,7 @@
     <artifactId>pagination</artifactId>
 
     <properties>
-        <msdemo.skipReportGen>true</msdemo.skipReportGen>
+        <msdemo.skipReportGen>false</msdemo.skipReportGen>
     </properties>
 
     <dependencies>

@@ -2,30 +2,12 @@ package org.ckr.msdemo.pagination;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.ckr.msdemo.pagination.entity.User;
-import org.ckr.msdemo.pagination.entity.UserWithRole;
-import org.ckr.msdemo.pagination.repository.UserRepository;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 
 /**
  * Created by yukai.a.lin on 8/14/2017.
@@ -34,12 +16,6 @@ public class JpaRestPaginationServiceStaticTest {
 
 
     private static Logger LOG = LoggerFactory.getLogger(JpaRestPaginationServiceStaticTest.class);
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    EntityManagerFactory entityManagerFactory;
 
     @Test
     public void testAdjustQueryStringAll() {

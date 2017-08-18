@@ -33,7 +33,7 @@ public class JpaRestPaginationService {
      * The HQL can include parameters. Please refer
      * {@link Query#setParameter(String, Object)} about
      * the format of the parameters in HQL.<br>
-     * If a HQL include a section like <code>"/* param1|... *<span></span>/"</code>, that means this section will not
+     * If a HQL include a section like <pre><code>"/* param1|... *<span></span>/"</code></pre>, that means this section will not
      * be exit in the HQL util parameter "param1" is specified.<br>
      * For example, assume the raw HQL is:<br>
      * "select t.field1, t.field2 from Table1 t where 1=1 /*param1| and t.field1 = :param1 *<span></span>/".<br>
@@ -50,8 +50,7 @@ public class JpaRestPaginationService {
      * @param mapper              If this is not null, it will be used to map object type that returned by hibernate
      *                            to object type that will be returned in the body of {@link QueryResponse}. For example, the HQL
      *                            will return an Object[]. However, the expected object type is DateView. Then, need to use
-     *                            this mapper to map Object[] to DataView. Please refer usage of
-     *                            {@link Query#()}.
+     *                            this mapper to map Object[] to DataView.
      * @param maxNoRecordsPerPage The max no of records that will be returned by this method.
      * @return an {@link QueryResponse} object that include the query result and pagination info.
      * @see QueryResponse
@@ -282,13 +281,15 @@ public class JpaRestPaginationService {
      * @param hql    hql to parse
      * @param params inject params to hql
      * @return standard hql query
-     * <p>
-     * sample query like like
-     */
-    // select u.userName, u.userDescription, u.locked from User u where 1=1
-    // /*userName| and u.userName = :userName */
-    // /*userDesc| and u.userDescription like :userDesc */
-     /* will be parsed and set correspondent value according to @params,
+     * sample query like
+     * <pre>
+     *     <code>
+     *             select u.userName, u.userDescription, u.locked from User u where 1=1
+     *              /<span></span>*userName| and u.userName = :userName *<span></span>/
+     *              /<span></span>*userDesc| and u.userDescription like :userDesc *<span></span>/
+     *     </code>
+     * </pre>
+     * will be parsed and set correspondent value according to params,
      * if params contain userName, statement u.userName = :userName will append.
      * if not, statement userName| and u.userName = :userName will be deleted.
      */
