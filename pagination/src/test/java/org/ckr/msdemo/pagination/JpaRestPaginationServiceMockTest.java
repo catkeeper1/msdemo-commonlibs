@@ -30,31 +30,31 @@ public class JpaRestPaginationServiceMockTest {
         new Expectations(){{
 
         }};
-
-        JpaRestPaginationService jpaRestPaginationService = (JpaRestPaginationService) SpringUtil.getBean(JpaRestPaginationService.class);
-        Map<String, Object> params = new HashMap<String, Object>();
-
-        if (!StringUtils.isEmpty("")) {
-            params.put("userName", "");
-        }
-        if (!StringUtils.isEmpty("")) {
-            params.put("userDesc", "%" + "" + "%");
-        }
-        Function<Object[], UserWithRole> mapper = new Function<Object[], UserWithRole>() {
-            @Override
-            public UserWithRole apply(Object[] row) {
-                UserWithRole view = new UserWithRole();
-                view.setUserName((String) row[0]);
-                view.setUserDescription((String) row[1]);
-                view.setLocked(((Boolean) row[2]));
-                view.setPassword((String) row[3]);
-                view.setRoleCode((String) row[4]);
-                view.setRoleDescription((String) row[5]);
-                return view;
-            }
-        };
-
-        List<UserWithRole> result = jpaRestPaginationService.query("", params, mapper);
+//
+//        JpaRestPaginationService jpaRestPaginationService = (JpaRestPaginationService) SpringUtil.getBean(JpaRestPaginationService.class);
+//        Map<String, Object> params = new HashMap<String, Object>();
+//
+//        if (!StringUtils.isEmpty("")) {
+//            params.put("userName", "");
+//        }
+//        if (!StringUtils.isEmpty("")) {
+//            params.put("userDesc", "%" + "" + "%");
+//        }
+//        Function<Object[], UserWithRole> mapper = new Function<Object[], UserWithRole>() {
+//            @Override
+//            public UserWithRole apply(Object[] row) {
+//                UserWithRole view = new UserWithRole();
+//                view.setUserName((String) row[0]);
+//                view.setUserDescription((String) row[1]);
+//                view.setLocked(((Boolean) row[2]));
+//                view.setPassword((String) row[3]);
+//                view.setRoleCode((String) row[4]);
+//                view.setRoleDescription((String) row[5]);
+//                return view;
+//            }
+//        };
+//
+//        List<UserWithRole> result = jpaRestPaginationService.query("", params, mapper);
     }
 
 }
