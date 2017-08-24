@@ -2,9 +2,6 @@ package org.ckr.msdemo.pagination;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ckr.msdemo.pagination.JpaRestPaginationService;
 import org.ckr.msdemo.pagination.entity.UserWithRole;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +28,7 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class JpaRestPaginationServiceFunctionalTest {
+public class JpaRestPaginationServiceDBTest {
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -46,16 +43,17 @@ public class JpaRestPaginationServiceFunctionalTest {
         String url = "http://localhost:" + port + "/user/queryUsersWithRoles?userName=" + userName + "&userDesc=" + userDesc;
 
         HttpHeaders headers = new HttpHeaders();
-        if (!StringUtils.isEmpty(range)){
+        if (!StringUtils.isEmpty(range)) {
             headers.add("Range", range);
         }
-        if (!StringUtils.isEmpty(sortBy)){
+        if (!StringUtils.isEmpty(sortBy)) {
             headers.add("SortBy", sortBy);
         }
         headers.setContentType(MediaType.TEXT_PLAIN);
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-        ParameterizedTypeReference<List<UserWithRole>> userWithRoleBean = new ParameterizedTypeReference<List<UserWithRole>>() {};
+        ParameterizedTypeReference<List<UserWithRole>> userWithRoleBean = new ParameterizedTypeReference<List<UserWithRole>>() {
+        };
         ResponseEntity<List<UserWithRole>> response = testRestTemplate.exchange(url, HttpMethod.GET, entity, userWithRoleBean);
 
         List<UserWithRole> userWithRoles = response.getBody();
@@ -65,7 +63,7 @@ public class JpaRestPaginationServiceFunctionalTest {
             LOG.info(userWithRole.toString());
         }
         assertThat(userWithRoles.size()).isEqualTo(length);
-        if(userWithRoles != null && userWithRoles.size() > 0 && !StringUtils.isEmpty(sortBy)){
+        if (userWithRoles != null && userWithRoles.size() > 0 && !StringUtils.isEmpty(sortBy)) {
             assertThat(userWithRoles.get(0).getUserName()).isEqualTo(firstName);
         }
 
@@ -77,47 +75,50 @@ public class JpaRestPaginationServiceFunctionalTest {
     }
 
     @Test
-    public void testSample(){
-        this.testTemplate("", "","items=1-20", "-userName",
+    public void testSample() {
+        this.testTemplate("", "", "items=1-20", "-userName",
             15, "DEF", 200);
     }
+
     @Test
-    public void testPageSize(){
-        this.testTemplate("", "","items=1-14", "-userName",
+    public void testPageSize() {
+        this.testTemplate("", "", "items=1-14", "-userName",
             14, "DEF", 200);
     }
+
     @Test
-    public void testOrder(){
-        this.testTemplate("", "","items=1-20", "+userName",
+    public void testOrder() {
+        this.testTemplate("", "", "items=1-20", "+userName",
             15, "ABC", 200);
     }
+
     @Test
-    public void testUserName(){
-        this.testTemplate("ABC", "","items=1-20", "-userName",
+    public void testUserName() {
+        this.testTemplate("ABC", "", "items=1-20", "-userName",
             3, "ABC", 200);
     }
 
     @Test
-    public void testUserDesc(){
-        this.testTemplate("", "DEF","items=1-20", "-userName",
+    public void testUserDesc() {
+        this.testTemplate("", "DEF", "items=1-20", "-userName",
             1, "DEF", 200);
     }
 
     @Test
-    public void testNoRecord(){
-        this.testTemplate("a", "","items=1-20", "-userName",
+    public void testNoRecord() {
+        this.testTemplate("a", "", "items=1-20", "-userName",
             0, "DEF", 200);
     }
 
     @Test
-    public void testNoOrder(){
-        this.testTemplate("", "","items=1-20", "",
+    public void testNoOrder() {
+        this.testTemplate("", "", "items=1-20", "",
             15, "", 200);
     }
 
     @Test
-    public void testLimit(){
-        this.testTemplate("", "","", "",
+    public void testLimit() {
+        this.testTemplate("", "", "", "",
             15, "", 200);
     }
 }

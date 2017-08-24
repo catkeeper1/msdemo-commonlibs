@@ -26,6 +26,16 @@ import javax.persistence.Query;
  */
 public class JpaRestPaginationService {
 
+    private EntityManager entityManager;
+
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(JpaRestPaginationService.class);
 
     /**
@@ -95,7 +105,6 @@ public class JpaRestPaginationService {
         String queryString = appendSortCriteria(queryStr, request);
 
         LOG.debug("get data HQL:{}", queryString);
-        EntityManager entityManager = (EntityManager) SpringUtil.getBean(EntityManager.class);
         Query query = entityManager.createQuery(queryString);
         setQueryParameter(query, params);
         if (request != null && request.getStart() != null) {
@@ -169,6 +178,7 @@ public class JpaRestPaginationService {
 
         if (request == null || (request.getStart() == 0 && request.getEnd() == null)) {
             response.setTotal((long) contentSize);
+            LOG.debug("request IS NULL");
             return;
         }
 
@@ -177,7 +187,6 @@ public class JpaRestPaginationService {
 
         LOG.debug("get total no of records HQL:{}", queryString);
 
-        EntityManager entityManager = (EntityManager) SpringUtil.getBean(EntityManager.class);
         Query query = (Query) entityManager.createQuery(queryString);
 
         setQueryParameter(query, params);
@@ -272,7 +281,6 @@ public class JpaRestPaginationService {
             }
 
         }
-        System.out.println("--result.toString()---"+result.toString());
         return result.toString();
     }
 
@@ -293,7 +301,7 @@ public class JpaRestPaginationService {
      * if params contain userName, statement u.userName = :userName will append.
      * if not, statement userName| and u.userName = :userName will be deleted.
      */
-    protected static String adjustQueryString(String hql, Map<String, Object> params) {
+    private static String adjustQueryString(String hql, Map<String, Object> params) {
 
         StringBuffer queryStr = new StringBuffer(hql);
 

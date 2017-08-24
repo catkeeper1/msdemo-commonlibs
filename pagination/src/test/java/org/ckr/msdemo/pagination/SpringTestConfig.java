@@ -1,29 +1,28 @@
 package org.ckr.msdemo.pagination;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
+import javax.persistence.EntityManager;
 
-/**
- * This class is only used to init spring boot container for DAO unit test case.
- * Annotation SpringBootApplication is needed for spring container initialization.
- */
-@SpringBootApplication(scanBasePackages = "org.ckr.msdemo.pagination")
+
+@Configuration
 public class SpringTestConfig {
-    private static ConfigurableApplicationContext applicationContext = null;
 
-    public void main(String args[]) {
-        SpringApplication app = new SpringApplication(SpringTestConfig.class);
-        app.setWebEnvironment(false);
+    @Autowired
+    EntityManager entityManager;
 
-        applicationContext = app.run(new String[] {});
-    }
+    @Bean
+    public JpaRestPaginationService loadJpaRestPaginationService(){
+        JpaRestPaginationService result = new JpaRestPaginationService();
+        result.setEntityManager(this.entityManager);
 
-    public static Object getBean(Class clazz) {
-        Map map = applicationContext.getBeansOfType(clazz);
-        return map.values().iterator().next();
+        return result;
     }
 }
 
