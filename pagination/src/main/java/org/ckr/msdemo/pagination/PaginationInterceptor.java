@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by Administrator on 2017/7/12.
+ * Custom HandlerInterceptor for parsing header and clear context data
  */
 public class PaginationInterceptor implements HandlerInterceptor {
 
@@ -15,9 +15,9 @@ public class PaginationInterceptor implements HandlerInterceptor {
      * This method is used to trigger {@link PaginationContext#parseRestPaginationParameters()} to parse
      * the patination request info from HTTP request.
      *
-     * @param request HttpServletRequest
+     * @param request  HttpServletRequest
      * @param response HttpServletResponse
-     * @param handler handler
+     * @param handler  handler
      * @return boolean
      * @throws Exception Exception
      */
@@ -30,6 +30,16 @@ public class PaginationInterceptor implements HandlerInterceptor {
         return true;
     }
 
+    /**
+     * This method is <strong>NOT</strong> used to modify response header for @ResponseBody and ResponseEntity methods.
+     *
+     * @param request      HttpServletRequest
+     * @param response     HttpServletResponse
+     * @param handler      handler
+     * @param modelAndView modelAndView
+     * @throws Exception Exception
+     * @see <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-handlermapping-interceptor">spring-framework-reference</a>
+     */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) throws Exception {
@@ -40,10 +50,10 @@ public class PaginationInterceptor implements HandlerInterceptor {
      * This method will call {@link PaginationContext#clearContextData()} to make sure the data stored in
      * thread local in PaginationContext is cleared before the thread is released back to the pool.
      *
-     * @param request HttpServletRequest
+     * @param request  HttpServletRequest
      * @param response HttpServletResponse
-     * @param handler handler
-     * @param ex Exception
+     * @param handler  handler
+     * @param ex       Exception
      * @throws Exception Exception
      */
     @Override

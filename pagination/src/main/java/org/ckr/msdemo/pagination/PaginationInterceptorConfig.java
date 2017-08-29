@@ -5,7 +5,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
- * Created by Administrator on 2017/7/12.
+ * Add custom HandlerInterceptor {@link PaginationInterceptor} to InterceptorRegistry
  */
 @Configuration
 public class PaginationInterceptorConfig extends WebMvcConfigurerAdapter {

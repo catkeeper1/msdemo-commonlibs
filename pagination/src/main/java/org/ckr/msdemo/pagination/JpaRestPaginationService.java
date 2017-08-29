@@ -25,7 +25,9 @@ import javax.persistence.Query;
  * call {@link JpaRestPaginationService#query(String, Map, Function, Long)} to do query.
  */
 public class JpaRestPaginationService {
-
+    /**
+     * EntityManager should be set before using JpaRestPaginationService
+     */
     private EntityManager entityManager;
 
     public EntityManager getEntityManager() {

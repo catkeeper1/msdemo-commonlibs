@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 /**
- * Created by Administrator on 2017/7/8.
+ * Custom ResponseBodyAdvice to modify response header before body is written.
+ * See: {@link PaginationContext#setRestPaginationResponse(ServerHttpResponse)}
  */
 @RestControllerAdvice()
 public class RestPaginationResponseAdvice implements ResponseBodyAdvice<Object> {

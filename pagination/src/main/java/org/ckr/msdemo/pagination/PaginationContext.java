@@ -39,6 +39,10 @@ public class PaginationContext {
         }
     }
 
+    /**
+     * Parse request header and
+     * set {@link PaginationContext.QueryRequest} (Range, SortBy) to {@link PaginationContext#requestInfo}
+     */
     public static void parseRestPaginationParameters() {
 
         HttpServletRequest request =
@@ -48,9 +52,7 @@ public class PaginationContext {
             return;
         }
 
-
         QueryRequest queryRequest = new QueryRequest();
-
         queryRequest = parsePageRange(queryRequest, request);
 
         if (queryRequest.getStart() == null) {
@@ -65,6 +67,13 @@ public class PaginationContext {
 
     }
 
+    /**
+     * Set response header with header name <code>Content-Range</code>
+     * and header value like <code>items 10-20/100</code> ,
+     * where 10 is start number of current page, 20 end number, and 100 the total number of all pages.
+     *
+     * @param response ServerHttpResponse
+     */
     public static void setRestPaginationResponse(ServerHttpResponse response) {
 
         QueryResponse queryResponse = responseInfo.get();
@@ -77,7 +86,6 @@ public class PaginationContext {
             + queryResponse.getEnd() + "/"
             + queryResponse.getTotal();
 
-
         LOG.debug("Content-Range={}", headerContent);
 
         response.getHeaders().set("Content-Range", headerContent);
@@ -85,6 +93,12 @@ public class PaginationContext {
 
     }
 
+    /**
+     * Set {@link PaginationContext.QueryResponse} to {@link PaginationContext#responseInfo}
+     * @param start start number of current page
+     * @param end end number of current page
+     * @param total total number of all pages
+     */
     public static void setResponseInfo(Long start, Long end, Long total) {
         QueryResponse response = new QueryResponse(start, end, total);
         responseInfo.set(response);
@@ -98,34 +112,30 @@ public class PaginationContext {
         return responseInfo.get();
     }
 
+    /**
+     * Remove all request and response info in thread local after response completed.
+     */
     public static void clearContextData() {
-
         if (requestInfo.get() != null) {
             LOG.debug("clear request info in thread local.");
             requestInfo.remove();
-
         }
 
         if (responseInfo.get() != null) {
             LOG.debug("clear response info in thread local.");
             responseInfo.remove();
         }
-
-
     }
 
     private static QueryRequest parsePageRange(QueryRequest range, HttpServletRequest webRequest) {
 
         Enumeration<String> headers = webRequest.getHeaders("Range");
 
-
         if (headers == null || (!headers.hasMoreElements())) {
             return range;
         }
 
-
         String rangeStr = headers.nextElement();
-
         LOG.debug("rangeStr = {}", rangeStr);
 
         if (!rangeStr.startsWith("items=")) {
