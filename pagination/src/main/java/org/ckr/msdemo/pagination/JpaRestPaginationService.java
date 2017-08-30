@@ -1,14 +1,10 @@
 package org.ckr.msdemo.pagination;
 
-//import com.google.gson.GsonBuilder;
-
 import org.ckr.msdemo.pagination.PaginationContext.QueryRequest;
 import org.ckr.msdemo.pagination.PaginationContext.QueryResponse;
 import org.ckr.msdemo.pagination.PaginationContext.SortCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -68,16 +64,16 @@ public class JpaRestPaginationService {
      * @see QueryResponse
      */
     public <R> List<R> query(final String hql,
-                               final Map<String, Object> params,
-                               final Function<Object[], R> mapper,
-                               final Long maxNoRecordsPerPage) {
+                             final Map<String, Object> params,
+                             final Function<Object[], R> mapper,
+                             final Long maxNoRecordsPerPage) {
         QueryRequest queryRequest = PaginationContext.getQueryRequest();
         queryRequest = this.adjustRange(queryRequest, maxNoRecordsPerPage);
         String queryStr = adjustQueryString(hql, params);
         QueryResponse response = new QueryResponse();
         List<R> resultList = doQueryContent(response, queryRequest, queryStr, params, mapper);
         doQueryTotalNoRecords(response, resultList.size(), queryRequest, queryStr, params);
-        PaginationContext.setResponseInfo(response.getStart(), response.getEnd() ,response.getTotal());
+        PaginationContext.setResponseInfo(response.getStart(), response.getEnd(), response.getTotal());
         return resultList;
     }
 
@@ -89,8 +85,8 @@ public class JpaRestPaginationService {
      * @see JpaRestPaginationService#query(String, Map, Function, Long)
      */
     public <R> List<R> query(final String hql,
-                               final Map<String, Object> params,
-                               Function<Object[], R> mapper) {
+                             final Map<String, Object> params,
+                             Function<Object[], R> mapper) {
 
         return query(hql, params, mapper, 500L);
 
@@ -98,11 +94,11 @@ public class JpaRestPaginationService {
 
 
     @SuppressWarnings("unchecked")
-    private <R> List<R> doQueryContent( QueryResponse response,
-                                         QueryRequest request,
-                                         String queryStr,
-                                         Map<String, Object> params,
-                                         Function<Object[], R> mapper) {
+    private <R> List<R> doQueryContent(QueryResponse response,
+                                       QueryRequest request,
+                                       String queryStr,
+                                       Map<String, Object> params,
+                                       Function<Object[], R> mapper) {
 
         String queryString = appendSortCriteria(queryStr, request);
 
@@ -149,7 +145,7 @@ public class JpaRestPaginationService {
         Stream<Object[]> stream = (Stream<Object[]>) rawResultList.stream();
 
         List<R> resultList = stream.map(mapper)
-                                   .collect(Collectors.toList());
+            .collect(Collectors.toList());
 
         return resultList;
 
@@ -217,13 +213,13 @@ public class JpaRestPaginationService {
         do {
             if (queryStrLen < 0) {
                 LOG.info("cannot find a top level 'FROM' from query string: '"
-                                          + queryStr + "' . The i is < 0 already");
+                    + queryStr + "' . The i is < 0 already");
             }
 
             fromIndex = upperQueryStr.lastIndexOf("FROM", queryStrLen);
             if (fromIndex < 0) {
                 LOG.info("cannot find a top level 'FROM' from query string: '"
-                                          + queryStr + "' . Cannot find 'FROM'. The i = " + queryStrLen);
+                    + queryStr + "' . Cannot find 'FROM'. The i = " + queryStrLen);
             }
 
             if (fromIndex <= end && fromIndex >= start) {

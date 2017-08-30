@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by Administrator on 2017/7/8.
+ * Store information for each request and its response
  */
 public class PaginationContext {
 
@@ -95,8 +95,9 @@ public class PaginationContext {
 
     /**
      * Set {@link PaginationContext.QueryResponse} to {@link PaginationContext#responseInfo}
+     *
      * @param start start number of current page
-     * @param end end number of current page
+     * @param end   end number of current page
      * @param total total number of all pages
      */
     public static void setResponseInfo(Long start, Long end, Long total) {
