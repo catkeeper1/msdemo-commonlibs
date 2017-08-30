@@ -9,8 +9,9 @@
  * participant  RestPaginationResponseAdvice
  * "PaginationInterceptor" -> "PaginationContext": Parse request and save to Threadlocal
  * "Controller" -> "JpaRestPaginationService" : Controller handle request with JpaRestPaginationService
- * "JpaRestPaginationService" -> "PaginationContext": Get request info from Threadlocal and execute query with pagination
- * "JpaRestPaginationService" -> "PaginationContext": Get request info from Threadlocal and execute query with total record count
+ * "JpaRestPaginationService" -> "PaginationContext": Get request info from Threadlocal
+ * "JpaRestPaginationService" -> "PaginationContext": execute query with pagination
+ * "JpaRestPaginationService" -> "PaginationContext": execute query with total record count
  * "JpaRestPaginationService" -> "PaginationContext": Save pagination and total record count to Threadlocal
  * "Controller" <- "JpaRestPaginationService" : Return result list
  * "PaginationContext" <- "RestPaginationResponseAdvice": Save custom header to response header

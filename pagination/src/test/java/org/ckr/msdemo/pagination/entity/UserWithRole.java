@@ -1,7 +1,5 @@
 package org.ckr.msdemo.pagination.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.io.Serializable;
 
 /**
@@ -67,13 +65,13 @@ public class UserWithRole implements Serializable {
 
     @Override
     public String toString() {
-        return "UserWithRole{" +
-            "userName='" + userName + '\'' +
-            ", userDescription='" + userDescription + '\'' +
-            ", password='" + password + '\'' +
-            ", locked=" + locked +
-            ", roleCode='" + roleCode + '\'' +
-            ", roleDescription='" + roleDescription + '\'' +
-            '}';
+        return "UserWithRole{"
+            + "userName='" + userName + '\''
+            + ", userDescription='" + userDescription + '\''
+            + ", password='" + password + '\''
+            + ", locked=" + locked
+            + ", roleCode='" + roleCode + '\''
+            + ", roleDescription='" + roleDescription + '\''
+            + '}';
     }
 }

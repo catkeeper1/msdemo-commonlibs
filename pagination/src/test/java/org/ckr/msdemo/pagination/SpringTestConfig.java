@@ -1,13 +1,9 @@
 package org.ckr.msdemo.pagination;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Map;
 import javax.persistence.EntityManager;
 
 
@@ -17,8 +13,13 @@ public class SpringTestConfig {
     @Autowired
     EntityManager entityManager;
 
+    /**
+     * Inject entityManager into JpaRestPaginationService.
+     *
+     * @return JpaRestPaginationService
+     */
     @Bean
-    public JpaRestPaginationService loadJpaRestPaginationService(){
+    public JpaRestPaginationService loadJpaRestPaginationService() {
         JpaRestPaginationService result = new JpaRestPaginationService();
         result.setEntityManager(this.entityManager);
 

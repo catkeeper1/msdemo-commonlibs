@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @RestControllerAdvice()
 public class RestPaginationResponseAdvice implements ResponseBodyAdvice<Object> {
 
-    private Logger LOG = LoggerFactory.getLogger(RestPaginationResponseAdvice.class);
+    private static Logger LOG = LoggerFactory.getLogger(RestPaginationResponseAdvice.class);
 
 
     @Override
@@ -25,7 +25,8 @@ public class RestPaginationResponseAdvice implements ResponseBodyAdvice<Object> 
     }
 
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
+                                  Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
 
         PaginationContext.setRestPaginationResponse(response);
 

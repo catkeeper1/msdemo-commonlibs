@@ -4,10 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import mockit.Expectations;
 import mockit.Mocked;
-import org.ckr.msdemo.pagination.PaginationContext;
-import org.ckr.msdemo.pagination.PaginationInterceptor;
-import org.ckr.msdemo.pagination.PaginationInterceptorConfig;
-import org.ckr.msdemo.pagination.RestPaginationResponseAdvice;
 import org.junit.Test;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -21,15 +17,14 @@ import javax.servlet.http.HttpServletRequest;
  * Created by Administrator on 2017/7/8.
  */
 public class PaginationContextTest {
-    private @Mocked
-    RequestContextHolder requestContextHolder;
+    @Mocked
+    private RequestContextHolder requestContextHolder;
 
-    private @Mocked
-    ServletRequestAttributes servletRequestAttributes;
+    @Mocked
+    private ServletRequestAttributes servletRequestAttributes;
 
-    private @Mocked
-    HttpServletRequest httpServletRequest;
-
+    @Mocked
+    private HttpServletRequest httpServletRequest;
 
     @Test
     public void testLoadAll() {
@@ -63,26 +58,28 @@ public class PaginationContextTest {
                                                      final String sortStr,
                                                      final boolean[] isAsc,
                                                      final String[] sortedField) {
-        new Expectations() {{
+        new Expectations() {
+            {
 
-            RequestContextHolder.getRequestAttributes();
-            result = servletRequestAttributes;
+                RequestContextHolder.getRequestAttributes();
+                result = servletRequestAttributes;
 
-            servletRequestAttributes.getRequest();
-            result = httpServletRequest;
+                servletRequestAttributes.getRequest();
+                result = httpServletRequest;
 
-            List<String> rangeValues = new ArrayList<>();
-            rangeValues.add(rangeStr);
-            httpServletRequest.getHeaders("Range");
-            times = 1;
-            result = Collections.enumeration(rangeValues);
+                List<String> rangeValues = new ArrayList<>();
+                rangeValues.add(rangeStr);
+                httpServletRequest.getHeaders("Range");
+                times = 1;
+                result = Collections.enumeration(rangeValues);
 
-            List<String> sortedByValues = new ArrayList<>();
-            sortedByValues.add(sortStr);
-            httpServletRequest.getHeaders("SortBy");
-            times = 1;
-            result = Collections.enumeration(sortedByValues);
-        }};
+                List<String> sortedByValues = new ArrayList<>();
+                sortedByValues.add(sortStr);
+                httpServletRequest.getHeaders("SortBy");
+                times = 1;
+                result = Collections.enumeration(sortedByValues);
+            }
+        };
 
         PaginationContext.parseRestPaginationParameters();
 

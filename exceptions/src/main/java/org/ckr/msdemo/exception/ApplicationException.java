@@ -31,15 +31,15 @@ public class ApplicationException extends BaseException {
         super(arg0);
     }
 
-//    public ApplicationException(String arg0, Object[] params, Throwable arg1) {
-//        super(arg0, arg1);
-//        addMessage(arg0, params);
-//    }
-//
-//    public ApplicationException(String arg0, Object[] params) {
-//        super(arg0);
-//        addMessage(arg0, params);
-//    }
+    /*public ApplicationException(String arg0, Object[] params, Throwable arg1) {
+        super(arg0, arg1);
+        addMessage(arg0, params);
+    }
+
+    public ApplicationException(String arg0, Object[] params) {
+        super(arg0);
+        addMessage(arg0, params);
+    }*/
 
 
     public List<ExceptionMessage> getMessageList() {

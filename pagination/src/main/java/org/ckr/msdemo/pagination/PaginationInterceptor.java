@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Custom HandlerInterceptor for parsing header and clear context data
+ * Custom HandlerInterceptor for parsing header and clear context data.
  */
 public class PaginationInterceptor implements HandlerInterceptor {
 

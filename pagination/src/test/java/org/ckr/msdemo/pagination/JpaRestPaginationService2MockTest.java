@@ -41,8 +41,9 @@ public class JpaRestPaginationService2MockTest {
 
         PaginationContext.QueryRequest queryRequest = constructQueryRequest(5, 6, true, "userName");
 
-        List result = testJpaRestPaginationServiceTemplate(hql, (int)(queryRequest.getEnd() - queryRequest.getStart() + 1),20, null, queryRequest,
-            (int)(queryRequest.getEnd() - queryRequest.getStart() + 1), 5, 6, 20);
+        List result = testJpaRestPaginationServiceTemplate(hql,
+            (int) (queryRequest.getEnd() - queryRequest.getStart() + 1), 20, null, queryRequest,
+            (int) (queryRequest.getEnd() - queryRequest.getStart() + 1), 5, 6, 20);
 
         assertThat(result.get(0)).isEqualTo(1);
         assertThat(result.get(1)).isEqualTo(1);
@@ -89,7 +90,7 @@ public class JpaRestPaginationService2MockTest {
     ) {
 
         List<Object[]> list = new ArrayList<Object[]>();
-        for (int i = 0; i < mockRecordSize; i++){
+        for (int i = 0; i < mockRecordSize; i++) {
             list.add(new Object[1]);
         }
 
@@ -102,35 +103,39 @@ public class JpaRestPaginationService2MockTest {
             }
         };
 
-        new Expectations(PaginationContext.class) {{
-            PaginationContext.getQueryRequest();
-            result = queryRequest;
-        }};
+        new Expectations(PaginationContext.class) {
+            {
+                PaginationContext.getQueryRequest();
+                result = queryRequest;
+            }
+        };
 
-        new Expectations() {{
-            entityManager.createQuery(anyString);
-            result = query;
+        new Expectations() {
+            {
+                entityManager.createQuery(anyString);
+                result = query;
 
-            query.getResultList();
-            result = list;
+                query.getResultList();
+                result = list;
 
-            query.getSingleResult();
-            result = (long) mockTotalRecordSize;
-        }};
+                query.getSingleResult();
+                result = (long) mockTotalRecordSize;
+            }
+        };
 
 
         jpaRestPaginationService.setEntityManager(entityManager);
         List<Object> result;
-        if (StringUtils.isEmpty(maxNoRecordsPerPage)){
+        if (StringUtils.isEmpty(maxNoRecordsPerPage)) {
             result = jpaRestPaginationService.query(hql, params, mapper);
-        }else {
+        } else {
             result = jpaRestPaginationService.query(hql, params, mapper, Long.valueOf(maxNoRecordsPerPage));
         }
 
-        assertThat(result.size()).isEqualTo(expectCurrentPageSize).withFailMessage("expectCurrentPageSize");
-        assertThat(PaginationContext.getQueryResponse().getStart()).isEqualTo((long) expectStart).withFailMessage("response start at ");
-        assertThat(PaginationContext.getQueryResponse().getEnd()).isEqualTo((long) expectEnd).withFailMessage(" response end at ");
-        assertThat(PaginationContext.getQueryResponse().getTotal()).isEqualTo((long) expectTotal).withFailMessage(" expectTotal ");
+        assertThat(result.size()).isEqualTo(expectCurrentPageSize);
+        assertThat(PaginationContext.getQueryResponse().getStart()).isEqualTo((long) expectStart);
+        assertThat(PaginationContext.getQueryResponse().getEnd()).isEqualTo((long) expectEnd);
+        assertThat(PaginationContext.getQueryResponse().getTotal()).isEqualTo((long) expectTotal);
 
         return result;
     }

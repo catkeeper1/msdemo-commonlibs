@@ -21,10 +21,82 @@ import javax.persistence.Query;
  * call {@link JpaRestPaginationService#query(String, Map, Function, Long)} to do query.
  */
 public class JpaRestPaginationService {
+    private static final Logger LOG = LoggerFactory.getLogger(JpaRestPaginationService.class);
     /**
-     * EntityManager should be set before using JpaRestPaginationService
+     * EntityManager should be set before using JpaRestPaginationService.
      */
     private EntityManager entityManager;
+
+    private static void setQueryParameter(Query query, Map<String, Object> params) {
+
+        if (params == null) {
+            return;
+        }
+
+        params.entrySet().forEach(e -> query.setParameter(e.getKey(), e.getValue()));
+
+    }
+
+    /**
+     * Adjust query according to params.
+     * sample query like
+     * <pre>
+     *     <code>
+     *             select u.userName, u.userDescription, u.locked from User u where 1=1
+     *              /<span></span>*userName| and u.userName = :userName *<span></span>/
+     *              /<span></span>*userDesc| and u.userDescription like :userDesc *<span></span>/
+     *     </code>
+     * </pre>
+     * will be parsed and set correspondent value according to params,
+     * if params contain userName, statement u.userName = :userName will append.
+     * if not, statement userName| and u.userName = :userName will be deleted.
+     *
+     * @param hql    hql to parse
+     * @param params inject params to hql
+     * @return standard hql query
+     */
+    private static String adjustQueryString(String hql, Map<String, Object> params) {
+
+        StringBuffer queryStr = new StringBuffer(hql);
+
+        LOG.debug("before adjustment, the query string is {}", queryStr);
+
+
+        for (int startInd = queryStr.indexOf("/*"); startInd >= 0; startInd = queryStr.indexOf("/*")) {
+
+            int endInd = queryStr.indexOf("*/", startInd);
+
+            if (endInd < 0) {
+                break;
+            }
+
+            String criteriaStr = queryStr.substring(startInd + 2, endInd);
+
+            LOG.debug("criteria string: {}", criteriaStr);
+
+            StringTokenizer tokenizer = new StringTokenizer(criteriaStr, "|");
+            if (tokenizer.countTokens() < 2) {
+                LOG.error("invalid criteria string: {}", criteriaStr);
+            }
+
+            String criteriaName = tokenizer.nextToken().trim();
+
+            if (params.keySet().contains(criteriaName)) {
+
+                String criteriaContent = tokenizer.nextToken();
+
+                queryStr.replace(startInd, endInd + 2, criteriaContent);
+
+            } else {
+
+                queryStr.replace(startInd, endInd + 2, "");
+            }
+        }
+
+        LOG.debug("after adjustment, the query string is {}", queryStr);
+        return queryStr.toString();
+
+    }
 
     public EntityManager getEntityManager() {
         return entityManager;
@@ -34,15 +106,13 @@ public class JpaRestPaginationService {
         this.entityManager = entityManager;
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(JpaRestPaginationService.class);
-
     /**
      * Do query base on a HQL. <br>
      * The HQL can include parameters. Please refer
      * {@link Query#setParameter(String, Object)} about
      * the format of the parameters in HQL.<br>
-     * If a HQL include a section like <pre><code>"/* param1|... *<span></span>/"</code></pre>, that means this section will not
-     * be exit in the HQL util parameter "param1" is specified.<br>
+     * If a HQL include a section like <pre><code>"/* param1|... *<span></span>/"</code></pre>,
+     * that means this section will not be exit in the HQL util parameter "param1" is specified.<br>
      * For example, assume the raw HQL is:<br>
      * "select t.field1, t.field2 from Table1 t where 1=1 /*param1| and t.field1 = :param1 *<span></span>/".<br>
      * If parameter "param1" is specified, the HQL will be:<br>
@@ -52,13 +122,15 @@ public class JpaRestPaginationService {
      * This feature is very useful for dynamic query scenario. <br>
      *
      * @param hql                 The HQL for the query
-     * @param params              A map that include all parameters that will be used in the HQL. The key of this map object is
-     *                            the parameter name. The value of this map object is the parameter value. This method call
-     *                            org.hibernate.query.Query#setParameter(String, Object) for each pair in this map object.
+     * @param params              A map that include all parameters that will be used in the HQL.
+     *                            The key of this map object is the parameter name. The value of this map object is
+     *                            the parameter value.
+     *                            This method call org.hibernate.query.Query#setParameter(String, Object)
+     *                            for each pair in this map object.
      * @param mapper              If this is not null, it will be used to map object type that returned by hibernate
-     *                            to object type that will be returned in the body of {@link QueryResponse}. For example, the HQL
-     *                            will return an Object[]. However, the expected object type is DateView. Then, need to use
-     *                            this mapper to map Object[] to DataView.
+     *                            to object type that will be returned in the body of {@link QueryResponse}.
+     *                            For example, the HQL will return an Object[]. However, the expected object type is
+     *                            DateView. Then, need to use this mapper to map Object[] to DataView.
      * @param maxNoRecordsPerPage The max no of records that will be returned by this method.
      * @return an {@link QueryResponse} object that include the query result and pagination info.
      * @see QueryResponse
@@ -91,7 +163,6 @@ public class JpaRestPaginationService {
         return query(hql, params, mapper, 500L);
 
     }
-
 
     @SuppressWarnings("unchecked")
     private <R> List<R> doQueryContent(QueryResponse response,
@@ -130,7 +201,6 @@ public class JpaRestPaginationService {
         }
         return resultList;
     }
-
 
     private <R> List<R> convertRawListToTargetList(List rawResultList, Function<Object[], R> mapper) {
         //if the raw list is empty, just return it because nothing need to be converted.
@@ -238,16 +308,6 @@ public class JpaRestPaginationService {
         return result;
     }
 
-    private static void setQueryParameter(Query query, Map<String, Object> params) {
-
-        if (params == null) {
-            return;
-        }
-
-        params.entrySet().forEach(e -> query.setParameter(e.getKey(), e.getValue()));
-
-    }
-
     private String appendSortCriteria(String queryString, QueryRequest request) {
 
         if (request == null) {
@@ -280,66 +340,6 @@ public class JpaRestPaginationService {
 
         }
         return result.toString();
-    }
-
-
-    /**
-     * @param hql    hql to parse
-     * @param params inject params to hql
-     * @return standard hql query
-     * sample query like
-     * <pre>
-     *     <code>
-     *             select u.userName, u.userDescription, u.locked from User u where 1=1
-     *              /<span></span>*userName| and u.userName = :userName *<span></span>/
-     *              /<span></span>*userDesc| and u.userDescription like :userDesc *<span></span>/
-     *     </code>
-     * </pre>
-     * will be parsed and set correspondent value according to params,
-     * if params contain userName, statement u.userName = :userName will append.
-     * if not, statement userName| and u.userName = :userName will be deleted.
-     */
-    private static String adjustQueryString(String hql, Map<String, Object> params) {
-
-        StringBuffer queryStr = new StringBuffer(hql);
-
-        LOG.debug("before adjustment, the query string is {}", queryStr);
-
-
-        for (int startInd = queryStr.indexOf("/*"); startInd >= 0; startInd = queryStr.indexOf("/*")) {
-
-            int endInd = queryStr.indexOf("*/", startInd);
-
-            if (endInd < 0) {
-                break;
-            }
-
-            String criteriaStr = queryStr.substring(startInd + 2, endInd);
-
-            LOG.debug("criteria string: {}", criteriaStr);
-
-            StringTokenizer tokenizer = new StringTokenizer(criteriaStr, "|");
-            if (tokenizer.countTokens() < 2) {
-                LOG.error("invalid criteria string: {}", criteriaStr);
-            }
-
-            String criteriaName = tokenizer.nextToken().trim();
-
-            if (params.keySet().contains(criteriaName)) {
-
-                String criteriaContent = tokenizer.nextToken();
-
-                queryStr.replace(startInd, endInd + 2, criteriaContent);
-
-            } else {
-
-                queryStr.replace(startInd, endInd + 2, "");
-            }
-        }
-
-        LOG.debug("after adjustment, the query string is {}", queryStr);
-        return queryStr.toString();
-
     }
 
 

@@ -24,6 +24,13 @@ public class UserService {
     @Autowired
     JpaRestPaginationService jpaRestPaginationService;
 
+    /**
+     * Query UsersWithRoles.
+     *
+     * @param userName userName
+     * @param userDesc userDesc
+     * @return List of UserWithRole
+     */
     public List<UserWithRole> queryUsersWithRoles(String userName, String userDesc) {
         Map<String, Object> params = new HashMap<String, Object>();
 
@@ -34,7 +41,8 @@ public class UserService {
             params.put("userDesc", "%" + userDesc + "%");
         }
 
-        String queryStr = "select u.userName as userName, u.userDescription, u.locked, u.password , g.roleCode, g.roleDescription from User u left join u.roles as g where 1=1 "
+        String queryStr = "select u.userName as userName, u.userDescription, u.locked, u.password , g.roleCode"
+            + ", g.roleDescription from User u left join u.roles as g where 1=1 "
             + "/*userName| and u.userName = :userName */"
             + "/*userDesc| and u.userDescription like :userDesc */";
 

@@ -28,7 +28,7 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class JpaRestPaginationServiceDBTest {
+public class JpaRestPaginationServiceDbTest {
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -38,9 +38,19 @@ public class JpaRestPaginationServiceDBTest {
 
     private static Logger LOG = LoggerFactory.getLogger(JpaRestPaginationService.class);
 
+    /**
+     * JpaRestPaginationServiceDbTest template for test case.
+     *
+     * @param userName user name
+     * @param userDesc user description
+     * @param range range
+     * @param sortBy sort by
+     * @param length length
+     * @param firstName first name
+     * @param statusCode status code
+     */
     public void testTemplate(String userName, String userDesc, String range, String sortBy,
                              int length, String firstName, int statusCode) {
-        String url = "http://localhost:" + port + "/user/queryUsersWithRoles?userName=" + userName + "&userDesc=" + userDesc;
 
         HttpHeaders headers = new HttpHeaders();
         if (!StringUtils.isEmpty(range)) {
@@ -52,9 +62,15 @@ public class JpaRestPaginationServiceDBTest {
         headers.setContentType(MediaType.TEXT_PLAIN);
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-        ParameterizedTypeReference<List<UserWithRole>> userWithRoleBean = new ParameterizedTypeReference<List<UserWithRole>>() {
+        ParameterizedTypeReference<List<UserWithRole>> userWithRoleBean = new ParameterizedTypeReference
+            <List<UserWithRole>>() {
         };
-        ResponseEntity<List<UserWithRole>> response = testRestTemplate.exchange(url, HttpMethod.GET, entity, userWithRoleBean);
+
+        String url = "http://localhost:" + port + "/user/queryUsersWithRoles?userName=" + userName
+            + "&userDesc=" + userDesc;
+
+        ResponseEntity<List<UserWithRole>> response = testRestTemplate.exchange(url, HttpMethod.GET, entity,
+            userWithRoleBean);
 
         List<UserWithRole> userWithRoles = response.getBody();
 

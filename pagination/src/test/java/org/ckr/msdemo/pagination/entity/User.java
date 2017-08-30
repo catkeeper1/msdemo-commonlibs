@@ -27,6 +27,12 @@ public class User implements Serializable {
         super();
     }
 
+    /**
+     * Constract user with user name and user description.
+     *
+     * @param userName userName
+     * @param userDescription userDescription
+     */
     public User(String userName, String userDescription) {
         super();
         this.userName = userName;

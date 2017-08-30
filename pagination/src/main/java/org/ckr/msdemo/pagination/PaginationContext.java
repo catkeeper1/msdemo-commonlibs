@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Store information for each request and its response
+ * Store information for each request and its response.
  */
 public class PaginationContext {
 
@@ -360,6 +360,13 @@ public class PaginationContext {
             super();
         }
 
+        /**
+         * Constract QueryResponse with parameters.
+         *
+         * @param start start
+         * @param end end
+         * @param total total
+         */
         public QueryResponse(Long start, Long end, Long total) {
             this.start = start;
             this.end = end;
