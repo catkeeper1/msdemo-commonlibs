@@ -63,6 +63,10 @@ public class BaseException extends RuntimeException {
             return;
         }
 
+        exceptionId = generateExceptionID();
+    }
+
+    public static String generateExceptionID() {
         DateFormat format = new SimpleDateFormat("yyMMddkkmmssSSS");
         StringBuilder buffer = new StringBuilder();
 
@@ -71,15 +75,15 @@ public class BaseException extends RuntimeException {
         NumberFormat numberFormat = new DecimalFormat("0000");
         numberFormat.setMaximumIntegerDigits(4);
 
-        String randomStr = numberFormat.format(this.hashCode());
+        String randomStr = numberFormat.format(new Object().hashCode());
         buffer.append(randomStr);
 
-        exceptionId = buffer.toString();
+        String exceptionId = buffer.toString();
 
         LOG.debug("generated exception ID is {}", exceptionId);
+
+        return exceptionId;
     }
-
-
 
     public String getExceptionId() {
         return exceptionId;

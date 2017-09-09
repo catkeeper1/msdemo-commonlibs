@@ -7,9 +7,11 @@ import org.ckr.msdemo.exception.valueobject.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractMessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -49,7 +51,16 @@ public final class RestExceptionHandler {
      */
     public static final String EXCEPTION_ID = "EXCEPTION_ID";
 
+    private static ResourceBundleMessageSource exceptionMsgSource = null;
+
+    static {
+        exceptionMsgSource = new ResourceBundleMessageSource();
+        exceptionMsgSource.setBasename("org.ckr.msdemo.exception.message.Message");
+
+    }
+
     private RestExceptionHandler() {
+
     }
 
     /**
@@ -71,6 +82,14 @@ public final class RestExceptionHandler {
 
         LOG.debug("start to handle exception");
 
+        HttpServletRequest httpRequest =
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        Locale locale = RequestContextUtils.getLocale(httpRequest);
+
+        if(exp instanceof AccessDeniedException) {
+            return handleAccessDeniedException((AccessDeniedException) exp, locale);
+        }
+
         BaseException be = null;
 
         if (exp instanceof BaseException) {
@@ -91,10 +110,9 @@ public final class RestExceptionHandler {
 
         headers.add(EXCEPTION_ID, be.getExceptionId());
 
-        HttpServletRequest httpRequest =
-                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        Locale locale = RequestContextUtils.getLocale(httpRequest);
+
+
 
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setExceptionId(be.getExceptionId());
@@ -123,6 +141,18 @@ public final class RestExceptionHandler {
 
         return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 
+    }
+
+    private static ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ae, Locale locale) {
+
+        String msg = exceptionMsgSource.getMessage("org.ckr.msdemo.exception.access_denied",
+                                      null,
+                                      locale);
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setExceptionId(BaseException.generateExceptionID());
+        errorResponse.addMessage("access_denied", msg);
+
+        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
