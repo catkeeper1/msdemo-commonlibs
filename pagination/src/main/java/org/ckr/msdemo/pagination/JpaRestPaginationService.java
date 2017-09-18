@@ -16,12 +16,48 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 /**
- * Implement pagination query base on hibernate.<br>
- * Before it is used, please register this as a bean in Spring container and inject a valid session factory. Then,
- * call {@link JpaRestPaginationService#query(String, Map, Function, Long)} to do query.
+ * Implement pagination query base on JPA.
+ *
+ * <p>This service provide below features:
+ * <ul>
+ *     <li>Construct dynamic QL base on parameter.
+ *     <li>Retrieve an range of records from a data set that should be returned by a query.
+ *     <li>Sort records by multiple fields.
+ *     <li>Retrun the actual range of records
+ *     <li>Return the total number of records available in a query.
+ * </ul>
+ *
+ * <p>Before it is used, please register this as a bean in Spring container and inject a valid JPA EntityManager.
+ * Below is an example:
+ * <pre>
+ *     <code>
+ *         &#64;Configuration
+ *         public class PaginationConfig {
+ *             ...
+ *             //retrieve a valid entityManager here.
+ *             &#64;Autowired
+ *             EntityManager entityManager;
+ *             ...
+ *
+ *             //create a instance of JpaRestPaginationService
+ *             &#64;Bean
+ *             public JpaRestPaginationService loadJpaRestPaginationService() {
+ *                 JpaRestPaginationService result = new JpaRestPaginationService();
+ *                 //inject a valid entity manager.
+ *                 result.setEntityManager(this.entityManager);
+ *                 return result;
+ *             }
+ *         }
+ *     </code>
+ * </pre>
+ * After it is created in spring container, developer can call
+ * {@link JpaRestPaginationService#query(String, Map, Function, Long)} to do query.
+ *
+ *
  */
 public class JpaRestPaginationService {
     private static final Logger LOG = LoggerFactory.getLogger(JpaRestPaginationService.class);
+
     /**
      * EntityManager should be set before using JpaRestPaginationService.
      */
@@ -51,13 +87,13 @@ public class JpaRestPaginationService {
      * if params contain userName, statement u.userName = :userName will append.
      * if not, statement userName| and u.userName = :userName will be deleted.
      *
-     * @param hql    hql to parse
-     * @param params inject params to hql
-     * @return standard hql query
+     * @param ql    JPQL to parse
+     * @param params inject params to ql
+     * @return standard JPQL query
      */
-    private static String adjustQueryString(String hql, Map<String, Object> params) {
+    private static String adjustQueryString(String ql, Map<String, Object> params) {
 
-        StringBuffer queryStr = new StringBuffer(hql);
+        StringBuffer queryStr = new StringBuffer(ql);
 
         LOG.debug("before adjustment, the query string is {}", queryStr);
 
@@ -98,50 +134,80 @@ public class JpaRestPaginationService {
 
     }
 
-    public EntityManager getEntityManager() {
-        return entityManager;
-    }
 
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     /**
-     * Do query base on a HQL. <br>
-     * The HQL can include parameters. Please refer
-     * {@link Query#setParameter(String, Object)} about
-     * the format of the parameters in HQL.<br>
-     * If a HQL include a section like <pre><code>"/* param1|... *<span></span>/"</code></pre>,
-     * that means this section will not be exit in the HQL util parameter "param1" is specified.<br>
-     * For example, assume the raw HQL is:<br>
-     * "select t.field1, t.field2 from Table1 t where 1=1 /*param1| and t.field1 = :param1 *<span></span>/".<br>
-     * If parameter "param1" is specified, the HQL will be:<br>
-     * "select t.field1, t.field2 from Table1 t where 1=1 and t.field1 = :param1". <br>
-     * Otherwise, the HQL will be:<br>
-     * "select t.field1, t.field2 from Table1 t where 1=1 ".<br>
-     * This feature is very useful for dynamic query scenario. <br>
+     * Do query base on a JPQL.
      *
-     * @param hql                 The HQL for the query
-     * @param params              A map that include all parameters that will be used in the HQL.
+     * <p>This method will access
+     * {@link PaginationContext#getQueryRequest()} to retrieve pagination request info and use
+     * {@link PaginationContext#setResponseInfo(Long, Long, Long)} to return
+     * pagination response info. Before this method is called, please make sure the pagination request info is
+     * available in {@link PaginationContext}.
+     *
+     * <p>Below is an example about how to call this method:
+     * <pre>
+     *     <code>
+     *
+     *         String queryStr = "select u.userName as userName, u.userDescription, u.locked, u.password , g.roleCode"
+     *         + ", g.roleDescription from User u left join u.roles as g where 1=1 "
+     *         + "&#47;*userName| and u.userName = :userName *&#47;"
+     *         + "&#47;*userDesc| and u.userDescription like :userDesc *&#47;";
+     *
+     *         Function&#60;Object[], UserWithRole&#62; mapper = new Function&#60;Object[], UserWithRole&#62;() {
+     *
+     *             &#64;Override
+     *             public UserWithRole apply(Object[] row) {
+     *
+     *                 UserWithRole view = new UserWithRole();
+     *
+     *                 view.setUserName((String) row[0]);
+     *                 view.setUserDescription((String) row[1]);
+     *                 view.setLocked(((Boolean) row[2]));
+     *                 view.setPassword((String) row[3]);
+     *                 view.setRoleCode((String) row[4]);
+     *                 view.setRoleDescription((String) row[5]);
+     *
+     *                 return view;
+     *             }
+     *
+     *
+     *         };
+     *         List&#60;UserWithRole&#62; result = jpaRestPaginationService.query(queryStr, params, mapper);
+     *     </code>
+     * </pre>
+     *
+     *
+     * @param ql                 The JPQL for the query. Please refer
+     *                            <a href="https://www.tutorialspoint.com/jpa/jpa_jpql.htm">JPQL tutorial</a> for more
+     *                            detail info. Please note that if there is a "&#47;* ... *&#47;" inside the JPQL,
+     *                            it means that is a dynamic part of the JPQL. In the example above, if parameter
+     *                            "userName" is in "params", " and u.userName = :userName " will be added to the JPQL.
+     *                            Otherwise, this part will not be involved in the query. Developer should utilize
+     *                            this feature when query need dynamic JPQL.
+     * @param params              A map that include all parameters that will be used in the JPQL.
      *                            The key of this map object is the parameter name. The value of this map object is
      *                            the parameter value.
-     *                            This method call org.hibernate.query.Query#setParameter(String, Object)
+     *                            This method call javax.persistence.Query#setParameter(String, Object)
      *                            for each pair in this map object.
-     * @param mapper              If this is not null, it will be used to map object type that returned by hibernate
-     *                            to object type that will be returned in the body of {@link QueryResponse}.
-     *                            For example, the HQL will return an Object[]. However, the expected object type is
+     * @param mapper              If this is not null, it will be used to map object type that returned by JPA
+     *                            to object type that will be returned.
+     *                            For example, the JPQL will return an Object[]. However, the expected object type is
      *                            DateView. Then, need to use this mapper to map Object[] to DataView.
      * @param maxNoRecordsPerPage The max no of records that will be returned by this method.
-     * @return an {@link QueryResponse} object that include the query result and pagination info.
-     * @see QueryResponse
+     * @return                   The content of records within the requested range.
+     *
      */
-    public <R> List<R> query(final String hql,
+    public <R> List<R> query(final String ql,
                              final Map<String, Object> params,
                              final Function<Object[], R> mapper,
                              final Long maxNoRecordsPerPage) {
         QueryRequest queryRequest = PaginationContext.getQueryRequest();
         queryRequest = this.adjustRange(queryRequest, maxNoRecordsPerPage);
-        String queryStr = adjustQueryString(hql, params);
+        String queryStr = adjustQueryString(ql, params);
         QueryResponse response = new QueryResponse();
         List<R> resultList = doQueryContent(response, queryRequest, queryStr, params, mapper);
         doQueryTotalNoRecords(response, resultList.size(), queryRequest, queryStr, params);
@@ -150,17 +216,18 @@ public class JpaRestPaginationService {
     }
 
     /**
-     * Do query base on a HQL. <br>
-     * This is the same as {@link JpaRestPaginationService#query(String, Map, Function, Long)} except
+     * Do query base on a JPQL.
+     *
+     * <p>This is the same as {@link JpaRestPaginationService#query(String, Map, Function, Long)} except
      * the maxNoRecordsPerPage parameter value is always 500.
      *
      * @see JpaRestPaginationService#query(String, Map, Function, Long)
      */
-    public <R> List<R> query(final String hql,
+    public <R> List<R> query(final String ql,
                              final Map<String, Object> params,
                              Function<Object[], R> mapper) {
 
-        return query(hql, params, mapper, 500L);
+        return query(ql, params, mapper, 500L);
 
     }
 
@@ -173,7 +240,7 @@ public class JpaRestPaginationService {
 
         String queryString = appendSortCriteria(queryStr, request);
 
-        LOG.debug("get data HQL:{}", queryString);
+        LOG.debug("get data JPQL:{}", queryString);
         Query query = entityManager.createQuery(queryString);
         setQueryParameter(query, params);
         if (request != null && request.getStart() != null) {
@@ -251,9 +318,9 @@ public class JpaRestPaginationService {
         }
 
 
-        String queryString = getHqlForTotalNoRecords(queryStr);
+        String queryString = getQlForTotalNoRecords(queryStr);
 
-        LOG.debug("get total no of records HQL:{}", queryString);
+        LOG.debug("get total no of records JPQL:{}", queryString);
 
         Query query = (Query) entityManager.createQuery(queryString);
 
@@ -265,7 +332,7 @@ public class JpaRestPaginationService {
         return;
     }
 
-    private String getHqlForTotalNoRecords(String queryStr) {
+    private String getQlForTotalNoRecords(String queryStr) {
 
         String result;
 
@@ -303,7 +370,7 @@ public class JpaRestPaginationService {
 
         result = "SELECT COUNT(*) " + queryStr.substring(fromIndex);
 
-        LOG.debug("HQL to get total number of records {}", result);
+        LOG.debug("JPQL to get total number of records {}", result);
 
         return result;
     }

@@ -11,9 +11,25 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * Store information for each request and its response.
+ * Store the pagination request/response info for each HTTP request and its response so that pagination info
+ * can be shared by different components.
+ *
+ * <p>The pagination request info come from HTTP request and it is used by the pagination service component
+ * (such as {@link JpaRestPaginationService}) only. In MVC model, there are controllers and services objects between
+ * the HTTP request and pagination service component. Becasue it is not a good practise to let every controllers and
+ * services to pass pagination info from HTTP request to pagination service component, this class is created.
+ * When a HTTP request with pagination info come in,
+ * {@link PaginationInterceptor#preHandle(HttpServletRequest, HttpServletResponse, Object)} will call
+ * {@link #parseRestPaginationParameters()} to parse pagination request info and store in a ThreadLocal object. Later,
+ * the pagination service component can retrieve this pagination request info to do query. After query is done,
+ * pagination service component can store the pagination repsonse info to this class(stored in ThreadLocal object as
+ * well). Finally, {@link RestPaginationResponseAdvice} will use the pagination response info in this class to modify
+ * the header of HTTP response. In the approach above, the pagination info handling is transparent to controllers and
+ * services objects.
+ *
  */
 public class PaginationContext {
 
@@ -40,8 +56,22 @@ public class PaginationContext {
     }
 
     /**
-     * Parse request header and
-     * set {@link PaginationContext.QueryRequest} (Range, SortBy) to {@link PaginationContext#requestInfo}
+     * Parse pagination requst info from HTTP request header and store it in ThreadLocal.
+     *
+     * <p>It is expected that there are below headers in the HTTP request:
+     * <ul>
+     *     <li>The name is "Range". This header is used to indicate the range of records should be retrieved.
+     *     Its value is "items={start}-{end}". "start" /"end" is the start/end position
+     *     of records that should be retrieved. For example, if the first 10 records should be retrieved, the value
+     *     should be "items=1-10".
+     *     <li>The name is "SortBy". This header is used to indicate which fields should be used for sorting.
+     *     Its value is "{+/-}{fieldName}". "+"/"-" maeans asc/desc. "fieldName" is the field used for sorting.
+     *     For example, if we want to do sorting by field "abc" with asc and field "def" with desc, the value should be
+     *     "+abc,-def".
+     * </ul>
+     * A {@link PaginationContext.QueryRequest} object will be created to store the parsed info mentioned above. This
+     * object will be saved in ThreadLocal.
+     * set {@link PaginationContext.QueryRequest} (Range, SortBy)
      */
     public static void parseRestPaginationParameters() {
 
@@ -68,9 +98,14 @@ public class PaginationContext {
     }
 
     /**
+     * Modify HTTP response header to return pagination response info to HTTP client.
      * Set response header with header name <code>Content-Range</code>
-     * and header value like <code>items 10-20/100</code> ,
-     * where 10 is start number of current page, 20 end number, and 100 the total number of all pages.
+     * and header value is <code>items {start}-{end}/{total}</code>. "start"/end" is the start/end position of the
+     * range of records that will be returned actually. "total" is the total number of records available for this
+     * query. For example, if the HTTP client want to retrieve records from the 11th record to 20th record. However,
+     * because there are only 15 records available for this query in total, only the records from 11th record to 15th
+     * record are returned. In this scenario, the value of <code>Content-Range</code> is <code>item 11-15/15</code>.
+     *
      *
      * @param response ServerHttpResponse
      */
@@ -94,11 +129,16 @@ public class PaginationContext {
     }
 
     /**
-     * Set {@link PaginationContext.QueryResponse} to {@link PaginationContext#responseInfo}
+     * Store pagination response info into ThreadLocal so that it can be used to modify HTTP response header later.
      *
-     * @param start start number of current page
-     * @param end   end number of current page
-     * @param total total number of all pages
+     * <p>Create an instance of {@link PaginationContext.QueryResponse} to store pagination response info and save
+     * it in a ThreadLocal object.
+     *
+     * @param start start position of range of record that will be returned actually. It started from 1.
+     * @param end   end position of range of record that will be returned actually. It started from 1.
+     * @param total total number of records are available for this query.
+     *
+     * @see #setRestPaginationResponse(ServerHttpResponse)
      */
     public static void setResponseInfo(Long start, Long end, Long total) {
         QueryResponse response = new QueryResponse(start, end, total);
@@ -114,7 +154,11 @@ public class PaginationContext {
     }
 
     /**
-     * Remove all request and response info in thread local after response completed.
+     * Remove all request and response info in ThreadLocal to release memory.
+     * Please refer {@link #parseRestPaginationParameters()} and {@link #setResponseInfo(Long, Long, Long)} because
+     * they save data in TheadLocal.
+     *
+     * @see PaginationInterceptor#afterCompletion(HttpServletRequest, HttpServletResponse, Object, Exception)
      */
     public static void clearContextData() {
         if (requestInfo.get() != null) {
@@ -225,7 +269,7 @@ public class PaginationContext {
 
     /**
      * This is used to store the query raw data(the range of records that should be returned).
-     * {@link PaginationContext} extract query data from HTTP request objects and store in a object of this
+     * {@link PaginationContext#parseRestPaginationParameters()} extract query data from HTTP request objects and store in a object of this
      * class. When developers implement , they just need to get the
      * query raw data from this class but not HTTP request so that it will not coupled with any thing in controller
      * layer.
@@ -346,7 +390,9 @@ public class PaginationContext {
          */
         private Long start;
 
-
+        /**
+         * @see QueryResponse#start
+         */
         private Long end;
 
         /**
