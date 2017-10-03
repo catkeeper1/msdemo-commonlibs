@@ -3,6 +3,7 @@ package org.ckr.msdemo.pagination;
 import org.ckr.msdemo.pagination.PaginationContext.QueryRequest;
 import org.ckr.msdemo.pagination.PaginationContext.QueryResponse;
 import org.ckr.msdemo.pagination.PaginationContext.SortCriteria;
+import org.ckr.msdemo.util.QueryStringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,64 +74,11 @@ public class JpaRestPaginationService {
 
     }
 
-    /**
-     * Adjust query according to params.
-     * sample query like
-     * <pre>
-     *     <code>
-     *             select u.userName, u.userDescription, u.locked from User u where 1=1
-     *              /<span></span>*userName| and u.userName = :userName *<span></span>/
-     *              /<span></span>*userDesc| and u.userDescription like :userDesc *<span></span>/
-     *     </code>
-     * </pre>
-     * will be parsed and set correspondent value according to params,
-     * if params contain userName, statement u.userName = :userName will append.
-     * if not, statement userName| and u.userName = :userName will be deleted.
-     *
-     * @param ql    JPQL to parse
-     * @param params inject params to ql
-     * @return standard JPQL query
-     */
+
     private static String adjustQueryString(String ql, Map<String, Object> params) {
 
-        StringBuffer queryStr = new StringBuffer(ql);
 
-        LOG.debug("before adjustment, the query string is {}", queryStr);
-
-
-        for (int startInd = queryStr.indexOf("/*"); startInd >= 0; startInd = queryStr.indexOf("/*")) {
-
-            int endInd = queryStr.indexOf("*/", startInd);
-
-            if (endInd < 0) {
-                break;
-            }
-
-            String criteriaStr = queryStr.substring(startInd + 2, endInd);
-
-            LOG.debug("criteria string: {}", criteriaStr);
-
-            StringTokenizer tokenizer = new StringTokenizer(criteriaStr, "|");
-            if (tokenizer.countTokens() < 2) {
-                LOG.error("invalid criteria string: {}", criteriaStr);
-            }
-
-            String criteriaName = tokenizer.nextToken().trim();
-
-            if (params.keySet().contains(criteriaName)) {
-
-                String criteriaContent = tokenizer.nextToken();
-
-                queryStr.replace(startInd, endInd + 2, criteriaContent);
-
-            } else {
-
-                queryStr.replace(startInd, endInd + 2, "");
-            }
-        }
-
-        LOG.debug("after adjustment, the query string is {}", queryStr);
-        return queryStr.toString();
+        return QueryStringUtil.adjustDynamicQueryString(ql, params != null ? params.keySet() : null);
 
     }
 
