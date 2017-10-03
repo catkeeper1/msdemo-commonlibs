@@ -8,7 +8,7 @@
 
         <loadUpdateData file="org/ckr/msdemo/adminservice/entity/test_USER_ROLE.csv"
                         primaryKey="USER_NAME,ROLE_CODE"
-                        tableName="USER_ROLE">
+                        tableName="DB_TEST_USER_ROLE">
         </loadUpdateData>
     </changeSet>
 </databaseChangeLog>

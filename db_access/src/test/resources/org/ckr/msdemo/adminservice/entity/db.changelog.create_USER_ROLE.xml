@@ -6,7 +6,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     <changeSet author="liquibase-docs" id="createTable-org.ckr.msdemo.adminservice.entity.USER_ROLE">
 
-        <createTable tableName="USER_ROLE">
+        <createTable tableName="DB_TEST_USER_ROLE">
             <column name="USER_NAME" type="java.sql.Types.VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
@@ -17,6 +17,6 @@
     </changeSet>
     <changeSet author="liquibase-docs" id="createTablePk-org.ckr.msdemo.adminservice.entity.USER_ROLE">
 
-        <addPrimaryKey constraintName="PK_USER_ROLE" columnNames="USER_NAME,ROLE_CODE" tableName="USER_ROLE" />
+        <addPrimaryKey constraintName="PK_USER_ROLE" columnNames="USER_NAME,ROLE_CODE" tableName="DB_TEST_USER_ROLE" />
     </changeSet>
 </databaseChangeLog>

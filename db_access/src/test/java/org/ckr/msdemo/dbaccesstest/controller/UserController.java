@@ -1,7 +1,7 @@
-package org.ckr.msdemo.pagination.controller;
+package org.ckr.msdemo.dbaccesstest.controller;
 
-import org.ckr.msdemo.pagination.entity.UserWithRole;
-import org.ckr.msdemo.pagination.service.UserService;
+import org.ckr.msdemo.dbaccesstest.entity.UserWithRole;
+import org.ckr.msdemo.dbaccesstest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +19,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/user/queryUsersWithRoles", method = RequestMethod.GET)
+    @RequestMapping(value = "/dbaccesstest/user/queryUsersWithRoles", method = RequestMethod.GET)
     public List<UserWithRole> queryUserWithRoles(@RequestParam String userName, @RequestParam String userDesc) {
         return userService.queryUsersWithRoles(userName, userDesc);
 

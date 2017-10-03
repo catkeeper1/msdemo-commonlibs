@@ -1,7 +1,7 @@
-package org.ckr.msdemo.pagination.service;
+package org.ckr.msdemo.dbaccesstest.service;
 
 import org.ckr.msdemo.pagination.JpaRestPaginationService;
-import org.ckr.msdemo.pagination.entity.UserWithRole;
+import org.ckr.msdemo.dbaccesstest.entity.UserWithRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

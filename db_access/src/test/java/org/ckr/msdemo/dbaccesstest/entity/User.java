@@ -1,4 +1,6 @@
-package org.ckr.msdemo.pagination.entity;
+package org.ckr.msdemo.dbaccesstest.entity;
+
+
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -18,7 +20,7 @@ import javax.persistence.Version;
  * This table store user info.
  */
 @Entity()
-@Table(name = "USER",
+@Table(name = "DB_TEST_USER",
     indexes = {@Index(name = "user_index_1", columnList = "USER_DESCRIPTION ASC ,IS_LOCKED DESC", unique = true),
         @Index(name = "user_index_2", columnList = "IS_LOCKED", unique = false)})
 public class User implements Serializable {
@@ -100,7 +102,7 @@ public class User implements Serializable {
     }
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "USER_ROLE",
+    @JoinTable(name = "DB_TEST_USER_ROLE",
         joinColumns = {@JoinColumn(name = "USER_NAME")},
         inverseJoinColumns = {@JoinColumn(name = "ROLE_CODE")})
     public List<Role> getRoles() {

@@ -1,4 +1,4 @@
-package org.ckr.msdemo.pagination.entity;
+package org.ckr.msdemo.dbaccesstest.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity()
-@Table(name = "ROLE")
+@Table(name = "DB_TEST_ROLE")
 public class Role implements Serializable {
 
     private static final long serialVersionUID = 4939126105741432131L;

@@ -8,7 +8,7 @@
 
         <loadUpdateData file="org/ckr/msdemo/adminservice/entity/test_USER.csv"
                         primaryKey="USER_NAME"
-                        tableName="USER">
+                        tableName="DB_TEST_USER">
             <column name="IS_LOCKED" type="BOOLEAN"/>
             <column name="LAST_MODIFIED_TIMESTAMP" type="DATE"/>
         </loadUpdateData>

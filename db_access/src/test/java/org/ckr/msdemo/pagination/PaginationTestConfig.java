@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 
 
 @Configuration
-public class SpringTestConfig {
+public class PaginationTestConfig {
 
     @Autowired
     EntityManager entityManager;

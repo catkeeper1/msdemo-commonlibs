@@ -1,4 +1,4 @@
-package org.ckr.msdemo.pagination.entity;
+package org.ckr.msdemo.dbaccesstest.entity;
 
 import java.io.Serializable;
 

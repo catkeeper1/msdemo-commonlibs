@@ -1,6 +1,6 @@
-package org.ckr.msdemo.pagination.repository;
+package org.ckr.msdemo.dbaccesstest.repository;
 
-import org.ckr.msdemo.pagination.entity.User;
+import org.ckr.msdemo.dbaccesstest.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

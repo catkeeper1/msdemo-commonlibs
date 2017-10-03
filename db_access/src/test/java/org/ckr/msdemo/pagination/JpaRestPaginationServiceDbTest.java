@@ -2,7 +2,8 @@ package org.ckr.msdemo.pagination;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.ckr.msdemo.pagination.entity.UserWithRole;
+import org.ckr.msdemo.dbaccesstest.dao.UserDao;
+import org.ckr.msdemo.dbaccesstest.entity.UserWithRole;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -28,7 +30,10 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
 public class JpaRestPaginationServiceDbTest {
+    @Autowired
+    UserDao userDao;
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -66,7 +71,7 @@ public class JpaRestPaginationServiceDbTest {
             <List<UserWithRole>>() {
         };
 
-        String url = "http://localhost:" + port + "/user/queryUsersWithRoles?userName=" + userName
+        String url = "http://localhost:" + port + "/dbaccesstest/user/queryUsersWithRoles?userName=" + userName
             + "&userDesc=" + userDesc;
 
         ResponseEntity<List<UserWithRole>> response = testRestTemplate.exchange(url, HttpMethod.GET, entity,

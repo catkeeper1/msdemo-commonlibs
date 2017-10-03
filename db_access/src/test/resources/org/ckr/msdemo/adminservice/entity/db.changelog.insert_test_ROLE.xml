@@ -8,7 +8,7 @@
 
         <loadUpdateData file="org/ckr/msdemo/adminservice/entity/test_ROLE.csv"
                         primaryKey="ROLE_CODE"
-                        tableName="ROLE">
+                        tableName="DB_TEST_ROLE">
             <column name="LAST_MODIFIED_TIMESTAMP" type="DATE"/>
         </loadUpdateData>
     </changeSet>
