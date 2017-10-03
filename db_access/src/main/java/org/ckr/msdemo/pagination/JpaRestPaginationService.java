@@ -3,13 +3,12 @@ package org.ckr.msdemo.pagination;
 import org.ckr.msdemo.pagination.PaginationContext.QueryRequest;
 import org.ckr.msdemo.pagination.PaginationContext.QueryResponse;
 import org.ckr.msdemo.pagination.PaginationContext.SortCriteria;
-import org.ckr.msdemo.util.QueryStringUtil;
+import org.ckr.msdemo.util.DbAccessUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -64,21 +63,13 @@ public class JpaRestPaginationService {
      */
     private EntityManager entityManager;
 
-    private static void setQueryParameter(Query query, Map<String, Object> params) {
 
-        if (params == null) {
-            return;
-        }
-
-        params.entrySet().forEach(e -> query.setParameter(e.getKey(), e.getValue()));
-
-    }
 
 
     private static String adjustQueryString(String ql, Map<String, Object> params) {
 
 
-        return QueryStringUtil.adjustDynamicQueryString(ql, params != null ? params.keySet() : null);
+        return DbAccessUtil.adjustDynamicQueryString(ql, params != null ? params.keySet() : null);
 
     }
 
@@ -190,7 +181,7 @@ public class JpaRestPaginationService {
 
         LOG.debug("get data JPQL:{}", queryString);
         Query query = entityManager.createQuery(queryString);
-        setQueryParameter(query, params);
+        DbAccessUtil.setQueryParameter(query, params);
         if (request != null && request.getStart() != null) {
             query.setFirstResult(request.getStart().intValue() - 1);
         }
@@ -272,7 +263,7 @@ public class JpaRestPaginationService {
 
         Query query = (Query) entityManager.createQuery(queryString);
 
-        setQueryParameter(query, params);
+        DbAccessUtil.setQueryParameter(query, params);
 
         response.setTotal((Long) query.getSingleResult());
         LOG.info("getContent = {}", contentSize);

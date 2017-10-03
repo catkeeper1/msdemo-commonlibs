@@ -3,6 +3,7 @@ package org.ckr.msdemo.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Query;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -10,9 +11,9 @@ import java.util.StringTokenizer;
 /**
  * A util class for query string processing.
  */
-public class QueryStringUtil {
+public class DbAccessUtil {
 
-    private static Logger LOG = LoggerFactory.getLogger(QueryStringUtil.class);
+    private static Logger LOG = LoggerFactory.getLogger(DbAccessUtil.class);
 
     /**
      * Adjust query string according to parameters.
@@ -48,7 +49,7 @@ public class QueryStringUtil {
      */
     public static String adjustDynamicQueryString(String ql, Set<String> paramNames) {
 
-        StringBuffer queryStr = new StringBuffer(ql);
+        StringBuilder queryStr = new StringBuilder(ql);
 
         LOG.debug("before adjustment, the query string is {}", queryStr);
 
@@ -80,12 +81,31 @@ public class QueryStringUtil {
 
             } else {
 
-                queryStr.replace(startInd, endInd + 2, "");
+                queryStr.delete(startInd, endInd + 2);
             }
         }
 
         LOG.debug("after adjustment, the query string is {}", queryStr);
         return queryStr.toString();
+
+    }
+
+
+    /**
+     * Put parameters values into a JPA query object.
+     * This method loop the values in params and call query.setParameter() method to put the parameter value
+     * into the query object.
+     * @param query    A JPA query object.
+     * @param params   An Map object that include parameters name and parameters values that will be put into the query
+     *                 object.
+     */
+    public static void setQueryParameter(Query query, Map<String, Object> params) {
+
+        if (params == null) {
+            return;
+        }
+
+        params.entrySet().forEach(e -> query.setParameter(e.getKey(), e.getValue()));
 
     }
 }
