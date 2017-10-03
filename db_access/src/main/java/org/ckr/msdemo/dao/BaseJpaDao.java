@@ -6,12 +6,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class BaseJpaDao {
 
     protected EntityManager entityManager;
 
-    protected <T> List<T> executeDynamicQuery(String ql, Map<String, Object> params) {
+    protected <T> List<T> executeDynamicQuery(final String ql,
+                                              final Map<String, Object> params,
+                                              final Function<Object[], T> mapper) {
 
 
         String adjustedQl = DbAccessUtil.adjustDynamicQueryString(ql, params.keySet());
@@ -20,6 +23,9 @@ public class BaseJpaDao {
 
         DbAccessUtil.setQueryParameter(query, params);
 
-        return query.getResultList();
+        List rawResultList = query.getResultList();
+        List<T> resultList = DbAccessUtil.convertRawListToTargetList(rawResultList, mapper);
+
+        return resultList;
     }
 }

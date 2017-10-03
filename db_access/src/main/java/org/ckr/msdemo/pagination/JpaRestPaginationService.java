@@ -190,7 +190,7 @@ public class JpaRestPaginationService {
         }
 
         List rawResultList = query.getResultList();
-        List<R> resultList = this.convertRawListToTargetList(rawResultList, mapper);
+        List<R> resultList = DbAccessUtil.convertRawListToTargetList(rawResultList, mapper);
 
 
         if (request == null || request.getStart() == null) {
@@ -208,24 +208,7 @@ public class JpaRestPaginationService {
         return resultList;
     }
 
-    private <R> List<R> convertRawListToTargetList(List rawResultList, Function<Object[], R> mapper) {
-        //if the raw list is empty, just return it because nothing need to be converted.
-        if (rawResultList.isEmpty()) {
-            return rawResultList;
-        }
 
-        if (mapper == null) {
-            return rawResultList;
-        }
-
-        Stream<Object[]> stream = (Stream<Object[]>) rawResultList.stream();
-
-        List<R> resultList = stream.map(mapper)
-            .collect(Collectors.toList());
-
-        return resultList;
-
-    }
 
     private QueryRequest adjustRange(QueryRequest request, Long maxNoRecordsPerPage) {
         if (request == null) {

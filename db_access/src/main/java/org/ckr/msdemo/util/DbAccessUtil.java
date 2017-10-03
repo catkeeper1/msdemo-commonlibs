@@ -4,9 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A util class for query string processing.
@@ -106,6 +110,33 @@ public class DbAccessUtil {
         }
 
         params.entrySet().forEach(e -> query.setParameter(e.getKey(), e.getValue()));
+
+    }
+
+    /**
+     * Convert a query result record from raw data type into an expected date type.
+     *
+     * @param rawResultList   A list store query result record in raw data type(should be an array).
+     * @param mapper          A mapper function that can be used for the converting.
+     * @param <R>             The expected data type. All query result records will be converted to this data type.
+     * @return                A List that include record in data type R
+     */
+    public static <R> List<R> convertRawListToTargetList(List rawResultList, Function<Object[], R> mapper) {
+        //if the raw list is empty, just return it because nothing need to be converted.
+        if (rawResultList.isEmpty()) {
+            return rawResultList;
+        }
+
+        if (mapper == null) {
+            return rawResultList;
+        }
+
+        Stream<Object[]> stream = (Stream<Object[]>) rawResultList.stream();
+
+        List<R> resultList = stream.map(mapper)
+                .collect(Collectors.toList());
+
+        return resultList;
 
     }
 }
