@@ -2,6 +2,7 @@ package org.ckr.msdemo.pagination;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.ckr.msdemo.dbaccesstest.annotation.AssemblyTest;
 import org.ckr.msdemo.dbaccesstest.dao.UserDao;
 import org.ckr.msdemo.dbaccesstest.entity.UserWithRole;
 import org.junit.Test;
@@ -29,11 +30,9 @@ import java.util.List;
  * Created by yukai.a.lin on 8/14/2017.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
+@AssemblyTest
 public class JpaRestPaginationServiceAsmTests {
-    @Autowired
-    UserDao userDao;
+
 
     @Autowired
     TestRestTemplate testRestTemplate;

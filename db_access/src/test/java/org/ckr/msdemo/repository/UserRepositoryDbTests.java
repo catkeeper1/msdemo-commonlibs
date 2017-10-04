@@ -1,5 +1,6 @@
 package org.ckr.msdemo.repository;
 
+import org.ckr.msdemo.dbaccesstest.annotation.DbUnitTest;
 import org.ckr.msdemo.dbaccesstest.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,10 +18,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 @RunWith(SpringRunner.class)
-@DataJpaTest
-@Transactional
+@DbUnitTest
 public class UserRepositoryDbTests {
 
     @Autowired
