@@ -1,5 +1,6 @@
 package org.ckr.msdemo.pagination;
 
+import org.ckr.msdemo.dbaccesstest.dao.UserDao;
 import org.ckr.msdemo.dbaccesstest.entity.UserWithRole;
 import org.ckr.msdemo.utility.annotation.AssemblyTest;
 import org.junit.Test;

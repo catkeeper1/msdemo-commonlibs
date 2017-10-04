@@ -2,6 +2,8 @@ package org.ckr.msdemo.dao;
 
 import org.ckr.msdemo.dbaccesstest.dao.UserDao;
 import org.ckr.msdemo.dbaccesstest.entity.UserWithRole;
+import org.ckr.msdemo.utility.annotation.AssemblyTest;
+import org.ckr.msdemo.utility.annotation.DbUnitTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
+@DbUnitTest
 public class BaseJpaDaoDbTests {
 
     @Autowired
