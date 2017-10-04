@@ -22,7 +22,7 @@
 
     <modules>
         <module>exceptions</module>
-        <module>db_access</module>
+        <module>db-access</module>
     </modules>
 
     <build>
