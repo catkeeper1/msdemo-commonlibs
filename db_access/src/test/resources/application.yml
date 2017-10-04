@@ -15,4 +15,4 @@ logging:
       web: DEBUG
       orm: DEBUG
       security: DEBUG
-    org.ckr: DEBUG
+    org.ckr: INFO

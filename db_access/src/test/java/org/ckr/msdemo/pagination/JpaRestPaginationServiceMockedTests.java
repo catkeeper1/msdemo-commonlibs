@@ -22,9 +22,9 @@ import javax.persistence.Query;
 /**
  * Created by yukai.a.lin on 8/14/2017.
  */
-public class JpaRestPaginationServiceMockTest {
+public class JpaRestPaginationServiceMockedTests {
 
-    private static Logger LOG = LoggerFactory.getLogger(JpaRestPaginationServiceMockTest.class);
+    private static Logger LOG = LoggerFactory.getLogger(JpaRestPaginationServiceMockedTests.class);
 
     @Tested
     JpaRestPaginationService jpaRestPaginationService;

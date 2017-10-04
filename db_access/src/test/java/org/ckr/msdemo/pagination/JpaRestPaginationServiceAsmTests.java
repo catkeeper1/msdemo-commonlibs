@@ -31,7 +31,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
-public class JpaRestPaginationServiceDbTest {
+public class JpaRestPaginationServiceAsmTests {
     @Autowired
     UserDao userDao;
 
@@ -44,7 +44,7 @@ public class JpaRestPaginationServiceDbTest {
     private static Logger LOG = LoggerFactory.getLogger(JpaRestPaginationService.class);
 
     /**
-     * JpaRestPaginationServiceDbTest template for test case.
+     * JpaRestPaginationServiceAsmTests template for test case.
      *
      * @param userName user name
      * @param userDesc user description

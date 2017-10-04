@@ -13,9 +13,9 @@ import java.util.Set;
 /**
  * Created by yukai.a.lin on 8/14/2017.
  */
-public class DbAccessUtilMockTest {
+public class DbAccessUtilMockedTests {
 
-    private static Logger LOG = LoggerFactory.getLogger(DbAccessUtilMockTest.class);
+    private static Logger LOG = LoggerFactory.getLogger(DbAccessUtilMockedTests.class);
 
     @Test
     public void testAdjustQueryStringAll() {
