@@ -23,6 +23,7 @@
     <modules>
         <module>exceptions</module>
         <module>db-access</module>
+        <module>utility</module>
     </modules>
 
     <build>
