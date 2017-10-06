@@ -1,5 +1,7 @@
 package org.ckr.msdemo.entity;
 
+import com.google.common.base.MoreObjects;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import javax.persistence.Column;
@@ -111,14 +113,14 @@ public abstract class BaseEntity implements CreatedByInfo, UpdatedByInfo, Serial
 
     @Override
     public String toString() {
-        return "BaseEntity{" +
-                "createdAt=" + createdAt +
-                ", createdBy='" + createdBy + '\'' +
-                ", createdByName='" + createdByName + '\'' +
-                ", updatedAt=" + updatedAt +
-                ", updatedBy='" + updatedBy + '\'' +
-                ", updatedByName='" + updatedByName + '\'' +
-                ", versionNo=" + versionNo +
-                '}';
+        return MoreObjects.toStringHelper(this)
+                .add("createdAt", createdAt)
+                .add("createdBy", createdBy)
+                .add("createdByName", createdByName)
+                .add("updatedAt", updatedAt)
+                .add("updatedBy", updatedBy)
+                .add("updatedByName", updatedByName)
+                .add("versionNo", versionNo)
+                .toString();
     }
 }
