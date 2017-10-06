@@ -107,4 +107,18 @@ public abstract class BaseEntity implements CreatedByInfo, UpdatedByInfo, Serial
     public void setVersionNo(Long versionNo) {
         this.versionNo = versionNo;
     }
+
+
+    @Override
+    public String toString() {
+        return "BaseEntity{" +
+                "createdAt=" + createdAt +
+                ", createdBy='" + createdBy + '\'' +
+                ", createdByName='" + createdByName + '\'' +
+                ", updatedAt=" + updatedAt +
+                ", updatedBy='" + updatedBy + '\'' +
+                ", updatedByName='" + updatedByName + '\'' +
+                ", versionNo=" + versionNo +
+                '}';
+    }
 }
