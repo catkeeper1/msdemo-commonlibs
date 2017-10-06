@@ -1,7 +1,7 @@
 package org.ckr.msdemo.entity;
 
 /**
- * Created by Administrator on 2017/10/5.
+ * Base interface for audit info.
  */
 public interface AuditInfo {
 }

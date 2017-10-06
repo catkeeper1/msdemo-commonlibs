@@ -40,6 +40,9 @@ public abstract class BaseEntity implements CreatedByInfo, UpdatedByInfo, Serial
 
     private Long versionNo;
 
+    /**
+     * @see CreatedByInfo#setCreatedAt(Timestamp)
+     */
     @Column(name = "CREATED_AT")
     public Timestamp getCreatedAt() {
         return createdAt;
@@ -50,6 +53,10 @@ public abstract class BaseEntity implements CreatedByInfo, UpdatedByInfo, Serial
         this.createdAt = createdAt;
     }
 
+    /**
+     * @see CreatedByInfo#setCreatedBy(String)
+     *
+     */
     @Column(name = "CREATED_BY", length = 200)
     public String getCreatedBy() {
         return createdBy;
@@ -60,6 +67,10 @@ public abstract class BaseEntity implements CreatedByInfo, UpdatedByInfo, Serial
         this.createdBy = createdBy;
     }
 
+    /**
+     *
+     * @see CreatedByInfo#setCreatedByDesc(String)
+     */
     @Column(name = "CREATED_BY_DESC", length = 200)
     public String getCreatedByDesc() {
         return createdByName;
