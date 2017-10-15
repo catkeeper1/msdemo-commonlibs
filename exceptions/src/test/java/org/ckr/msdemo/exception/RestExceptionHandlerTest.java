@@ -1,6 +1,6 @@
 package org.ckr.msdemo.exception;
 
-import org.ckr.msdemo.exception.handler.RestExceptionHandler;
+import org.ckr.msdemo.exception.util.RestExceptionHandler;
 import org.junit.Test;
 
 /**
