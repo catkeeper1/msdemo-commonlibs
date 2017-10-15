@@ -111,7 +111,22 @@ public class ApplicationException extends BaseException {
         return addMessage(msgCode, null);
     }
 
-
+    /**
+     * Throw this exception if {@link #getMessageList()} return an non empty list.
+     * This method is used for below scenario:
+     * <ul>
+     *     <li>There are multple validation rules.
+     *     <li>For each rule, program will do one checking. If the checking failed, addMessage() will be called to
+     *     add one message to the message list.
+     *     <li>Call this method. If the message list is empty, that means all validations passed. If no, this
+     *     exception will be thrown and all error messages will be shown to user.
+     * </ul>
+     */
+    public void throwThisIfValid() {
+        if(!this.messageList.isEmpty()) {
+            throw this;
+        }
+    }
 
     /**
      * This is an internal class used by {@link ApplicationException} to store user message data.
