@@ -12,7 +12,7 @@ import java.util.Locale;
  */
 public class ExceptionTestUtil {
 
-    public static boolean checkMsg(MessageSource messageSource,
+    public static boolean checkErrorMsg(MessageSource messageSource,
                                 ApplicationException appExp,
                                 String expectedMsgCode,
                                 String expectedMessage) {
@@ -20,6 +20,10 @@ public class ExceptionTestUtil {
         ErrorResponse errorResponse = new ErrorResponse();
 
         RestExceptionHandler.updateMsgForResponse(errorResponse, appExp, messageSource, Locale.ENGLISH);
+
+        if(errorResponse.getMessageList() == null) {
+            return false;
+        }
 
         for(ErrorResponse.ErrorMessage errorMessage : errorResponse.getMessageList()) {
 
