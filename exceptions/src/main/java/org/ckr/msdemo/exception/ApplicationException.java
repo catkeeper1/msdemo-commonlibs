@@ -2,7 +2,9 @@ package org.ckr.msdemo.exception;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This exception should be used when an user message should be shown to end users to explain what action should be
@@ -208,6 +210,22 @@ public class ApplicationException extends BaseException {
          */
         public String getMessage() {
             return message;
+        }
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ExceptionMessage that = (ExceptionMessage) o;
+            return Objects.equals(messageCode, that.messageCode) &&
+                    Arrays.equals(messageParams, that.messageParams) &&
+                    Objects.equals(message, that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(messageCode, messageParams, message);
         }
     }
 }
