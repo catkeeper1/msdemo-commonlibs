@@ -1,4 +1,4 @@
-package org.ckr.msdemo.exception.handler;
+package org.ckr.msdemo.exception.util;
 
 import org.ckr.msdemo.exception.ApplicationException;
 import org.ckr.msdemo.exception.BaseException;
@@ -6,6 +6,7 @@ import org.ckr.msdemo.exception.SystemException;
 import org.ckr.msdemo.exception.valueobject.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.context.support.AbstractMessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpHeaders;
@@ -16,13 +17,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * This is a util class for exception handling. When an exception is caught by global exception handler.
- * The global exception handler can call the {@link #handleException(Throwable, AbstractMessageSource)} to generate an
+ * The global exception handler can call the {@link #handleException(Throwable, MessageSource)} to generate an
  * propery responding for json REST api. Below is an example: <br>
  * <pre>
  *         <code>
@@ -78,7 +80,7 @@ public final class RestExceptionHandler {
      *
      */
     public static ResponseEntity<ErrorResponse> handleException(Throwable exp,
-                                                                AbstractMessageSource messageSource) {
+                                                                MessageSource messageSource) {
 
         LOG.debug("start to handle exception");
 
@@ -119,27 +121,37 @@ public final class RestExceptionHandler {
 
         if (be instanceof ApplicationException) {
             ApplicationException appExp = (ApplicationException) be;
-            for (int i = 0; i < appExp.getMessageList().size(); i++) {
-                ApplicationException.ExceptionMessage expMsg = appExp.getMessageList().get(i);
-                LOG.debug("return exception message with msg code = {} params = {} message = {}",
-                        expMsg.getMessageCode(),
-                        expMsg.getMessageParams(),
-                        expMsg.getMessage());
-
-                String msg = expMsg.getMessage();
-
-                if (msg == null || "".equals(msg.trim())) {
-                    msg = messageSource.getMessage(expMsg.getMessageCode(),
-                            expMsg.getMessageParams(),
-                            locale);
-                }
-
-                errorResponse.addMessage(expMsg.getMessageCode(), msg);
-
-            }
+            updateMsgForResponse(errorResponse, appExp, messageSource, locale);
         }
 
         return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
+
+    public static void updateMsgForResponse(ErrorResponse errorResponse,
+                                            ApplicationException appExp,
+                                            MessageSource messageSource,
+                                            Locale locale) {
+        ArrayList<String> msgList = new ArrayList<>(appExp.getMessageList().size());
+
+        for (int i = 0; i < appExp.getMessageList().size(); i++) {
+            ApplicationException.ExceptionMessage expMsg = appExp.getMessageList().get(i);
+            LOG.debug("return exception message with msg code = {} params = {} message = {}",
+                    expMsg.getMessageCode(),
+                    expMsg.getMessageParams(),
+                    expMsg.getMessage());
+
+            String msg = expMsg.getMessage();
+
+            if (msg == null || "".equals(msg.trim())) {
+                msg = messageSource.getMessage(expMsg.getMessageCode(),
+                        expMsg.getMessageParams(),
+                        locale);
+            }
+
+            errorResponse.addMessage(expMsg.getMessageCode(), msg);
+
+        }
 
     }
 

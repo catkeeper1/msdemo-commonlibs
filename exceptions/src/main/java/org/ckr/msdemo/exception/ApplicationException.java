@@ -2,7 +2,9 @@ package org.ckr.msdemo.exception;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This exception should be used when an user message should be shown to end users to explain what action should be
@@ -111,7 +113,22 @@ public class ApplicationException extends BaseException {
         return addMessage(msgCode, null);
     }
 
-
+    /**
+     * Throw this exception if {@link #getMessageList()} return an non empty list.
+     * This method is used for below scenario:
+     * <ul>
+     *     <li>There are multple validation rules.
+     *     <li>For each rule, program will do one checking. If the checking failed, addMessage() will be called to
+     *     add one message to the message list.
+     *     <li>Call this method. If the message list is empty, that means all validations passed. If no, this
+     *     exception will be thrown and all error messages will be shown to user.
+     * </ul>
+     */
+    public void throwThisIfValid() {
+        if(!this.messageList.isEmpty()) {
+            throw this;
+        }
+    }
 
     /**
      * This is an internal class used by {@link ApplicationException} to store user message data.
@@ -193,6 +210,22 @@ public class ApplicationException extends BaseException {
          */
         public String getMessage() {
             return message;
+        }
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ExceptionMessage that = (ExceptionMessage) o;
+            return Objects.equals(messageCode, that.messageCode) &&
+                    Arrays.equals(messageParams, that.messageParams) &&
+                    Objects.equals(message, that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(messageCode, messageParams, message);
         }
     }
 }
