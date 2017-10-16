@@ -4,6 +4,7 @@ import org.ckr.msdemo.dbaccesstest.dao.UserDao;
 import org.ckr.msdemo.dbaccesstest.entity.UserWithRole;
 import org.ckr.msdemo.utility.annotation.AssemblyTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringRunner.class)
 @AssemblyTest
+@Category(AssemblyTest.class)
 public class JpaRestPaginationServiceAsmTests {
 
 

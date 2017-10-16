@@ -13,6 +13,11 @@
 
     <properties>
         <msdemo.skipReportGen>false</msdemo.skipReportGen>
+        <testcase.groups>
+            org.ckr.msdemo.utility.annotation.MockedTest
+            ,org.ckr.msdemo.utility.annotation.DbUnitTest
+            ,org.ckr.msdemo.utility.annotation.AssemblyTest
+        </testcase.groups>
     </properties>
 
     <dependencies>
@@ -62,8 +67,37 @@
 
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>AssemblyTest</id>
+            <properties>
+                <testcase.groups>org.ckr.msdemo.utility.annotation.AssemblyTest</testcase.groups>
+            </properties>
+        </profile>
+        <profile>
+            <id>DbUnitTest</id>
+            <properties>
+                <testcase.groups>org.ckr.msdemo.utility.annotation.DbUnitTest</testcase.groups>
+            </properties>
+        </profile>
+        <profile>
+            <id>MockedTest</id>
+            <properties>
+                <testcase.groups>org.ckr.msdemo.utility.annotation.MockedTest</testcase.groups>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <groups>${testcase.groups}</groups>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
 </project>

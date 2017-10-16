@@ -6,7 +6,9 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
+import org.ckr.msdemo.utility.annotation.MockedTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -22,6 +24,7 @@ import javax.persistence.Query;
 /**
  * Created by yukai.a.lin on 8/14/2017.
  */
+@Category(MockedTest.class)
 public class JpaRestPaginationServiceMockedTests {
 
     private static Logger LOG = LoggerFactory.getLogger(JpaRestPaginationServiceMockedTests.class);

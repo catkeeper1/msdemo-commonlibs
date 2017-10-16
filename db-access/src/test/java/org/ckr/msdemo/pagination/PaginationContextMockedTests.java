@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import mockit.Expectations;
 import mockit.Mocked;
+import org.ckr.msdemo.utility.annotation.MockedTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Created by Administrator on 2017/7/8.
  */
+@Category(MockedTest.class)
 public class PaginationContextMockedTests {
     @Mocked
     private RequestContextHolder requestContextHolder;

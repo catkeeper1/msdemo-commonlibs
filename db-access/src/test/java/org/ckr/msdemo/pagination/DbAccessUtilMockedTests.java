@@ -3,7 +3,9 @@ package org.ckr.msdemo.pagination;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.ckr.msdemo.util.DbAccessUtil;
+import org.ckr.msdemo.utility.annotation.MockedTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +15,7 @@ import java.util.Set;
 /**
  * Created by yukai.a.lin on 8/14/2017.
  */
+@Category(MockedTest.class)
 public class DbAccessUtilMockedTests {
 
     private static Logger LOG = LoggerFactory.getLogger(DbAccessUtilMockedTests.class);
