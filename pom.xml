@@ -48,7 +48,7 @@
                     <executable>java</executable>
                     <arguments>
                         <argument>-Dcoverage-output=html</argument>
-                        <argument>-Dcoverage-srcDirs=${project.basedir}/pagination/src/main/java,${project.basedir}/exceptions/src/main/java</argument>
+                        <argument>-Dcoverage-srcDirs=${project.basedir}/db-access/src/main/java,${project.basedir}/exceptions/src/main/java,${project.basedir}/utility/src/main/java</argument>
                         <argument>-Dcoverage-outputDir=${project.build.directory}/coverage-report</argument>
                         <!--<argument>-Dcoverage-classes=org.ckr.msdemo.*</argument>-->
                         <argument>-classpath</argument>
@@ -57,8 +57,9 @@
                         </classpath>
 
                         <argument>mockit.coverage.CodeCoverage</argument>
-                        <argument>pagination/target/coverage-data</argument>
+                        <argument>db-access/target/coverage-data</argument>
                         <argument>exceptions/target/coverage-data</argument>
+                        <argument>utility/target/coverage-data</argument>
                     </arguments>
 
                     <classpathScope>test</classpathScope>
