@@ -1,5 +1,7 @@
 package org.ckr.msdemo.exception;
 
+import com.google.common.base.Joiner;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +18,9 @@ public class ApplicationException extends BaseException {
     private static final long serialVersionUID = 1799296168836812569L;
 
     protected List<ExceptionMessage> messageList = new ArrayList<>();
+
+
+    protected StackTraceElement[] stackWhenThrown = null;
 
     protected ApplicationException() {
         super();
@@ -108,9 +113,40 @@ public class ApplicationException extends BaseException {
         return this;
     }
 
-    public final ApplicationException addMessage(String msgCode) {
+    @Override
+    public String getMessage() {
+        StringBuilder result = new StringBuilder( 1024);
 
-        return addMessage(msgCode, null);
+        for (ExceptionMessage msg : messageList) {
+            result.append("message code: ");
+            result.append(msg.getMessageCode());
+            result.append(".");
+
+            if (msg.getMessageParams() != null) {
+                result.append(" message parameters: [");
+
+                Joiner.on(',').appendTo(result, msg.getMessageParams());
+                result.append("]");
+            }
+
+            result.append("\r\n");
+
+        }
+
+        if (stackWhenThrown != null) {
+            result.append("exception is thrown at:\r\n");
+
+            //print 5 line only to tell where this exception is thrown.
+            for (int ind = 0 ; ind < 5 && ind < stackWhenThrown.length; ind++) {
+                result.append("\tat ");
+                result.append(stackWhenThrown[ind]);
+                result.append("\r\n");
+            }
+        }
+
+        result.append(super.getMessage());
+
+        return result.toString();
     }
 
     /**
@@ -125,7 +161,11 @@ public class ApplicationException extends BaseException {
      * </ul>
      */
     public void throwThisIfValid() {
+
+        Thread.currentThread().getStackTrace();
+
         if(!this.messageList.isEmpty()) {
+            this.stackWhenThrown = Thread.currentThread().getStackTrace();
             throw this;
         }
     }
