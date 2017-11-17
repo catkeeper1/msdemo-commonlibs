@@ -99,7 +99,7 @@ public class ApplicationException extends BaseException {
      *                be used to indicate the error.
      * @param params  The values for parameters inside the message template.
      */
-    public final ApplicationException addMessage(String msgCode, Object[] params) {
+    public final ApplicationException addMessage(String msgCode, Object... params) {
 
         ExceptionMessage expMsg = new ExceptionMessage(msgCode, params);
 
