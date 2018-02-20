@@ -13,8 +13,20 @@ package org.ckr.msdemo.exception;
  *     <li>{@link org.ckr.msdemo.exception.ApplicationException}: If want to show error messages to user and ask end
  *     user to do something, this exception should be thrown. Such as, a field cannot be empty. When this validation is
  *     failed, an ApplicationException with message "Field XXX cannot be empty" should be thrown.
- *     <li>
+ *     <li>{@link org.ckr.msdemo.exception.ReThrownSystemException}: This is used for cross service exception handling.
+ *     If service A call service B and service B throw an SystemException, error info(please refer
+ *     {@link org.ckr.msdemo.exception.util.RestExceptionHandler}) will be returned to service A. Then, a
+ *     {@link org.ckr.msdemo.exception.ReThrownSystemException} should be thrown in service A so that the global
+ *     exception handler will handle this exception.
+ *     <li>{@link org.ckr.msdemo.exception.ReThrownApplicationException}: This is similar to
+ *     {@link org.ckr.msdemo.exception.ReThrownSystemException}. The difference is this is used for the scenariio that
+ *     some messages should be returned to end users.
  * </ul>
  *
+ * This package also include {@link org.ckr.msdemo.exception.util.RestExceptionHandler} that is used to generate json
+ * message when exception is thrown.
+ *
+ * <p>{@link org.ckr.msdemo.exception.client.ExceptionDecoder} is used to decode the error message when a called
+ * service thrown exception.
  *
  */
