@@ -2,6 +2,8 @@
 
 *.iml
 
+/src/*
 
 exceptions/target
 db-access/target
+utility/target
