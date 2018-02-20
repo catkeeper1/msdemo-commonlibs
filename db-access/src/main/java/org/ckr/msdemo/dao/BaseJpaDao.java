@@ -16,13 +16,13 @@ import java.util.function.Function;
  * entity manager object(used to manipulate DB through JPA API), define some util methods that are convenient for
  * DB query.
  */
-public abstract class BaseJpaDao {
+public class BaseJpaDao {
 
     /**
      * An reference to an JPA Entity manager.
      * This is used to manipulate DB through JPA API.
      */
-    protected EntityManager entityManager;
+    protected EntityManager entityManager = null;
 
 
     /**
@@ -33,6 +33,15 @@ public abstract class BaseJpaDao {
      */
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    private EntityManager getEntityManager() {
+        if (entityManager == null) {
+            throw new RuntimeException("entity manager is not initialized. "
+                                      + "Please use setEntityManager() method to inject an entity manager.");
+        }
+
+        return entityManager;
     }
 
     /**
@@ -56,7 +65,7 @@ public abstract class BaseJpaDao {
 
         String adjustedQl = DbAccessUtil.adjustDynamicQueryString(ql, params.keySet());
 
-        Query query = this.entityManager.createQuery(adjustedQl);
+        Query query = getEntityManager().createQuery(adjustedQl);
 
         DbAccessUtil.setQueryParameter(query, params);
 

@@ -142,10 +142,12 @@ public class ApplicationException extends BaseException {
             result.append(msg.getMessageCode());
             result.append(".");
 
-            if (msg.getMessageParams() != null) {
+            Object[] msgParams = msg.getMessageParams();
+
+            if (msgParams.length > 0) {
                 result.append(" message parameters: [");
 
-                Joiner.on(',').appendTo(result, msg.getMessageParams());
+                Joiner.on(',').appendTo(result, msgParams);
                 result.append("]");
             }
 
@@ -203,7 +205,7 @@ public class ApplicationException extends BaseException {
 
         private String messageCode = null;
 
-        private Object[] messageParams = null;
+        private Object[] messageParams = new Object[0];
 
         private String message = null;
 
@@ -218,7 +220,7 @@ public class ApplicationException extends BaseException {
          */
         public ExceptionMessage(String code, Object[] params) {
             this.messageCode = code;
-            if (params != null) {
+            if (params != null && params.length > 0) {
                 this.messageParams = new Object[params.length];
                 System.arraycopy(params, 0, this.messageParams, 0, params.length);
             }
@@ -233,7 +235,6 @@ public class ApplicationException extends BaseException {
          */
         public ExceptionMessage(String code, String message) {
             this.messageCode = code;
-            this.messageParams = null;
             this.message = message;
         }
 
@@ -251,7 +252,7 @@ public class ApplicationException extends BaseException {
          */
         public Object[] getMessageParams() {
 
-            if (this.messageParams != null) {
+            if (this.messageParams.length > 0) {
                 int arrayLen = this.messageParams.length;
 
                 Object[] result = new Object[arrayLen];
@@ -261,7 +262,7 @@ public class ApplicationException extends BaseException {
                 return result;
             }
 
-            return null;
+            return new Object[0];
         }
 
         /**
