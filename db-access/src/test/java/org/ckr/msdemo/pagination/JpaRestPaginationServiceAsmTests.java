@@ -42,6 +42,12 @@ public class JpaRestPaginationServiceAsmTests {
 
     private static Logger LOG = LoggerFactory.getLogger(JpaRestPaginationService.class);
 
+
+    public void testTemplate(String userName, String userDesc, String range, String sortBy,
+                             int length, String firstName, int statusCode) {
+        testTemplate(userName, userDesc, range, sortBy, null, length, firstName, statusCode);
+    }
+
     /**
      * JpaRestPaginationServiceAsmTests template for test case.
      *
@@ -53,7 +59,7 @@ public class JpaRestPaginationServiceAsmTests {
      * @param firstName first name
      * @param statusCode status code
      */
-    public void testTemplate(String userName, String userDesc, String range, String sortBy,
+    public void testTemplate(String userName, String userDesc, String range, String sortBy, String filterBy,
                              int length, String firstName, int statusCode) {
 
         HttpHeaders headers = new HttpHeaders();
@@ -63,6 +69,11 @@ public class JpaRestPaginationServiceAsmTests {
         if (!StringUtils.isEmpty(sortBy)) {
             headers.add("SortBy", sortBy);
         }
+
+        if (!StringUtils.isEmpty(filterBy)) {
+            headers.add("FilterBy", filterBy);
+        }
+
         headers.setContentType(MediaType.TEXT_PLAIN);
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
@@ -96,7 +107,7 @@ public class JpaRestPaginationServiceAsmTests {
 
     @Test
     public void testSample() {
-        this.testTemplate("", "", "items=1-20", "-userName",
+        this.testTemplate("", "", "items=1-20", "-userName", "userName|N",
             15, "DEF", 200);
     }
 

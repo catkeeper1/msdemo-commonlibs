@@ -1,19 +1,24 @@
 package org.ckr.msdemo.pagination;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ckr.msdemo.pagination.PaginationContext.FilterOperator.*;
 
+import mockit.Deencapsulation;
 import mockit.Expectations;
 import mockit.Mocked;
 import org.ckr.msdemo.utility.annotation.MockedTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+
+
 
 /**
  * Created by Administrator on 2017/7/8.
@@ -103,4 +108,97 @@ public class PaginationContextMockedTests {
 
 
     }
+
+    @Test
+    public void testParseFilterBy() {
+
+    }
+
+    @Test
+    public void testSplitFilterString() {
+        List<String> actualResult = PaginationContext.splitFilterString("abc,def234@,v\\,,j\\,a\\,2\\,\\,3,");
+
+        assertThat(actualResult).containsExactly("abc",
+                                                 "def234@",
+                                                 "v\\,",
+                                                 "j\\,a\\,2\\,\\,3");
+    }
+
+    @Test
+    public void testSplitFilterStringWithEmptyString() {
+        List<String> actualResult = PaginationContext.splitFilterString("");
+
+        assertThat(actualResult).isEmpty();
+    }
+
+    @Test
+    public void testSplitFilterStringWithSpaces() {
+        List<String> actualResult = PaginationContext.splitFilterString("  ");
+
+        assertThat(actualResult).containsExactly("  ");
+    }
+
+    @Test
+    public void testSplitFilterStringWithAllDelims() {
+        List<String> actualResult = PaginationContext.splitFilterString(",,,,");
+
+        assertThat(actualResult).containsExactly("", "", "", "");
+    }
+
+    @RunWith(Parameterized.class)
+    public static class CreateFilterCriteriaMockedTests{
+
+        private String criteriaStr;
+        private String expectedFileName;
+        private PaginationContext.FilterOperator expectedFilterOperator;
+        private String expectedValue;
+
+        public CreateFilterCriteriaMockedTests(String criteriaStr,
+                                               String expectedFileName,
+                                               PaginationContext.FilterOperator expectedFilterOperator,
+                                               String expectedValue) {
+            this.criteriaStr = criteriaStr;
+            this.expectedFileName = expectedFileName;
+            this.expectedFilterOperator = expectedFilterOperator;
+            this.expectedValue = expectedValue;
+        }
+
+        @Parameterized.Parameters
+        public static Collection testParams() {
+            Object[][] result = {
+                //criteriaStr      expectedFileName   expectedFilterOperator         expectedValue
+                { "abc|N"         ,"abc"             , IS_NULL        , null},
+                { "abc|NN"        ,"abc"             , IS_NOT_NULL    , null},
+                { "abcA|=|1234"   ,"abcA"            , EQUALS         , "1234"},
+                { "cbA|<=|124"   ,"cbA"              , EQUALS_OR_LESS , "124"},
+                { "cbA|>=|24|@"   ,"cbA"             , EQUALS_OR_LARGER , "24|@"},
+                { "cbA|C|24|@"   ,"cbA"              , CONTAINS , "24|@"},
+                { "cbA|<>|24|@"   ,"cbA"             , NOT_EQUALS , "24|@"}
+            };
+
+            return Arrays.asList(result);
+        }
+
+
+        @Test
+        public void testCreateFilterCriteria () {
+            PaginationContext.FilterCriteria filterCriteria =
+                    Deencapsulation.invoke(PaginationContext.class,
+                            "createFilterCriteria",
+                            criteriaStr);
+
+            assertThat(filterCriteria.getFiledName()).isEqualTo(expectedFileName);
+            assertThat(filterCriteria.getFilterOperator()).isEqualTo(expectedFilterOperator);
+
+            if (expectedValue != null) {
+                assertThat(filterCriteria.getValue()).isEqualTo(expectedValue);
+            }
+
+        }
+
+
+    }
+
+
+
 }
