@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<h2>Introduction</h2>
+ The JLaby is the Java version of an old OS/390 PL/I multiplayer game. That game was 
+ a fun project, born out of boredom when I still worked for a large company. Sometimes 
+ I didn't have any work to do at all, so I started creating games. One day, me and 
+ some friends of mine decided to start a persistent multiplayer game, written in PL/I, 
+ using a DB/2 database for persistency, and providing a "3D" view (though the graphics 
+ had to be "drawn" with text characters - see screenshots).
+<p>
+Years later - I had started an own company together with some friends - I decided that 
+the request-oriented, stateless character of that old OS/390 game was actually a good 
+fit for the web. So I collected the old sourcecode, reusing only the text "graphics", 
+but rewriting everything else from scratch in a more modern manner (using Java servlets with JDBC).
+<p>
+Now that it works, there's only one catch: There is still no actual game in the whole 
+thing. You can walk around in the 3D world and do lots of stuff, but... that's it. 
+Anyway, maybe sometime some real game will arise from it. As for now, it's just fun doing it. 
+
+<!-- NEWPAGE -->
+
+<h1>FAQ</h1>
+<ol><li><b>What is the JLaby?</b><br> 
+The JLaby is a hobby project with no purpose other than having fun doing it.
+It implements a simple, rectangle-based 3D online world. It provides a
+persistent world and user state through a database. The cheat-avoiding design
+leaves all decisions to the server, the client never gets any information it
+doesn't need. For instance, the client never knows, which direction it is
+looking at in the game world. The server just tells the client what it sees.
+It's like in the real world. As long as you don't have a compass, you have no
+bloody idea about the direction your looking at (north, south..). 
+<p>
+The request-oriented design makes the implementation of an action game almost
+impossible, since the display of a client does not update until the user
+refreshes it. Therefore, other types of games should be created with JLaby [fill
+in fresh and original idea here].
+<p>
+On the other hand, the design should scale very well and allows for any HTTP
+client to roam the JLaby world. That's why you can get into the JLaby with
+your webbrowser. And a MIDP client exists as well.<br>
+</li>
+
+  <li><b>What features are planned for the JLaby world?</b><br>
+  <ul>
+    <li>Handling of items, including use and combination (keys to lock and
+    unlock doors, maps, teleporters, maybe weapons, spray to print stuff on the
+    walls etc.), exchange with other users, stealing etc.</li>
+
+    <li>Bots (computer-controlled characters) that will interact with the
+    players, maybe also with each other. Expect the first implementations to be
+    very silly!</li>
+    <li>Allow some involvement of the users, for instance by providing means to
+    upload a customized, unique text graphics file for the own character.</li>
+  </ul>
+  </li>
+  
+  <li><b>Who the heck want's text-character graphics nowadays?</b><br>
+  In this world of ultra-realistic sophisticated realtime 3D virtual realities,
+  it may look a little bit outdated (only a little), but its simplicity is
+  exactly the point. Well, ok, I just needed an excuse for my nostalgic feelings.
+  Nevertheless, I really find it pretty cool myself! :-))<br></li>
+
+  <li><b>Why do it if there is no game??</b><br>
+  It's still better writing useless software than driving around and polluting
+  the world, or killing innocent animals on a hunt! And, for the game question,
+  maybe someone will have an idea about that sometime. But before you have, read
+  the next point, please.<br></li>
+
+  <li><b>Why not just create a fantasy / scifi RPG?</b><br>
+  *Yaawwwnn*... Oh, really, c'mon... there is at least a dozen of such games on
+  SourceForge alone. And it's a fact that of all people on earth, only a
+  minority really digs stuff like that. The overwhelming success of games like &quot;The
+  Sims&quot; (which is the first major blockbuster game known to have been bought by
+  at least as many women as men) is proof enough. So, personally, I'd prefer
+  something fresh, constructive (killing preferably not included), and most of
+  all, humorous. Well, ok, I'm flexible about the killing part, as long as it
+  fit's in in a more black humour (Monty Python?) style.<br></li>
+
+  <li><b>What clients / platforms are supported?</b><br>
+  <ul>
+    <li>HTML (webbrowser)</li>
+    <li>MIDP (working skeleton code exists)</li>
+    <li>*J2SE* does not exist yet - do you wanna do it?</li>
+  </ul></li>
+  
+  <li><b>Is it free?</b><br>
+  It is indeed, as much as you can think, as it's released under 
+  the <a href="http://www.gnu.org/licenses/gpl.html">GNU Public License (GPL)</a></li>
+</ol>
+
+</body>
+</html>
