@@ -4,8 +4,10 @@ import org.ckr.msdemo.pagination.PaginationContext.QueryRequest;
 import org.ckr.msdemo.pagination.PaginationContext.QueryResponse;
 import org.ckr.msdemo.pagination.PaginationContext.SortCriteria;
 import org.ckr.msdemo.util.DbAccessUtil;
+import org.ckr.msdemo.util.TransactionInfoHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.interceptor.TransactionAttribute;
 
 import java.util.List;
 import java.util.Map;
@@ -151,6 +153,9 @@ public class JpaRestPaginationService {
         List<R> resultList = doQueryContent(response, queryRequest, queryStr, params, mapper);
         doQueryTotalNoRecords(response, resultList.size(), queryRequest, queryStr, params);
         PaginationContext.setResponseInfo(response.getStart(), response.getEnd(), response.getTotal());
+
+        TransactionAttribute att = TransactionInfoHolder.getTransactionAttribute();
+
         return resultList;
     }
 

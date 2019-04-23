@@ -3,13 +3,11 @@ package org.ckr.msdemo.pagination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -90,6 +88,7 @@ public class PaginationContext {
         }
 
         queryRequest = parseSortBy(queryRequest, request);
+        queryRequest = parseFilterBy(queryRequest, request);
 
         LOG.debug("queryRequest = {}", queryRequest);
 
@@ -241,6 +240,7 @@ public class PaginationContext {
 
             if (criteriaStr.length() <= 1) {
                 LOG.error("invlaid sort critiera:{}", criteriaStr);
+                continue;
             }
 
             SortCriteria sortCriteria = new SortCriteria();
@@ -251,7 +251,7 @@ public class PaginationContext {
             } else if (criteriaStr.startsWith("-")) {
                 sortCriteria.setAsc(false);
             } else {
-                LOG.error("invlaid sort critiera:{}", criteriaStr);
+                LOG.warn("invlaid sort critiera:{}", criteriaStr);
                 continue;
             }
 
@@ -265,6 +265,174 @@ public class PaginationContext {
         request.setSortCriteriaList(sortCriteriaList);
 
         return request;
+    }
+
+
+    private static QueryRequest parseFilterBy(QueryRequest request, HttpServletRequest webRequest) {
+        Enumeration<String> headers = webRequest.getHeaders("FilterBy");
+
+        if (headers == null || (!headers.hasMoreElements())) {
+            request.setFilterCriteriaList(new ArrayList<>());
+            return request;
+        }
+
+        String filterByStr = headers.nextElement();
+
+        LOG.debug("parseFilterBy(). filterByStr = {}", filterByStr);
+
+        StringTokenizer tokenizer = new StringTokenizer(filterByStr, ",");
+
+        List<String> criteriaStrList = splitFilterString(filterByStr);
+
+        List<FilterCriteria> filterCriteriaList = new ArrayList<>(criteriaStrList.size());
+
+        for (String criteriaStr : criteriaStrList) {
+
+            if (criteriaStr.length() <= 1) {
+                LOG.warn("invlaid filter critiera:{}", criteriaStr);
+                continue;
+            }
+
+            FilterCriteria filterCriteria = createFilterCriteria(criteriaStr);
+            if(filterCriteria == null) {
+                continue;
+            }
+
+            filterCriteriaList.add(filterCriteria);
+
+        }
+
+        request.setFilterCriteriaList(filterCriteriaList);
+
+        return request;
+    }
+
+    static List<String> splitFilterString(String filterByStr) {
+        List<String> result = new ArrayList<>();
+        if (StringUtils.isEmpty(filterByStr)) {
+            return result;
+        }
+//        StringTokenizer tokenizer = new StringTokenizer(filterByStr, ",",true);
+//
+//
+//        while (tokenizer.hasMoreTokens()) {
+//            StringBuilder oneRecord = new StringBuilder();
+//            String curToken = tokenizer.nextToken();
+//
+//            if (",".equals(curToken)) {
+//                continue;
+//            }
+//
+//            oneRecord.append(curToken);
+//
+//            while (tokenizer.hasMoreTokens()) {
+//
+//                String tmpToken = tokenizer.nextToken();
+//
+//                if (oneRecord.lastIndexOf("\\") == ( oneRecord.length() - 1 )) {
+//                    oneRecord.append(tmpToken);
+//                    continue;
+//                }
+//
+//                if (oneRecord.lastIndexOf(",") == ( oneRecord.length() - 1 )) {
+//                    if (",".equals(tmpToken)) {
+//                        break;
+//                    } else {
+//                        oneRecord.append(tmpToken);
+//                        continue;
+//                    }
+//                }
+//                break;
+//
+//            }
+//            if(oneRecord.length() > 0) {
+//                result.add(oneRecord.toString());
+//            }
+//        }
+
+        int start = 0;
+        int end = 0;
+
+        int totalLength = filterByStr.length();
+
+        while (end < totalLength) {
+
+            char curChar = filterByStr.charAt(end);
+
+            if (isDelim(filterByStr, end)) {
+
+                result.add(filterByStr.substring(start, end));
+                end++;
+                start = end;
+                continue;
+            }
+            end++;
+        }
+
+        if (result.isEmpty()) {
+            result.add(filterByStr);
+        }
+
+        return result;
+    }
+
+    static private boolean isDelim(String str, int index) {
+        if (str.charAt(index) == ',') {
+            if (index > 0 && str.charAt(index - 1) == '\\') {
+                return false;
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    private static FilterCriteria createFilterCriteria(String criteriaStr) {
+        FilterCriteria filterCriteria = new FilterCriteria();
+
+        StringTokenizer tokenizer = new StringTokenizer(criteriaStr, "|");
+
+        try {
+            String fieldName = tokenizer.nextToken();
+
+            if (StringUtils.isEmpty(fieldName)) {
+                return null;
+            }
+
+            filterCriteria.setFiledName(fieldName);
+
+            String filterTypeStr = tokenizer.nextToken();
+
+            filterCriteria.setFilterOperator(convertFilterType(filterTypeStr));
+
+            if (FilterOperator.IS_NOT_NULL == filterCriteria.getFilterOperator()
+                || FilterOperator.IS_NULL == filterCriteria.getFilterOperator()) {
+
+                return filterCriteria;
+            }
+
+            filterCriteria.setValue(criteriaStr.substring(fieldName.length() + filterTypeStr.length() + 2));
+
+        } catch (NoSuchElementException exp) {
+            LOG.warn("Invalid filter criteria string {}", criteriaStr);
+
+            return null;
+        }
+
+        return filterCriteria;
+
+    }
+
+
+
+    private static FilterOperator convertFilterType(String filterTypeSymbol) {
+        FilterOperator result = FilterOperator.getFilterOperatorBySymbol(filterTypeSymbol);
+
+        if (result == null) {
+            result = FilterOperator.IS_NULL;
+        }
+
+        return result;
     }
 
     /**
@@ -298,6 +466,8 @@ public class PaginationContext {
          */
         private List<SortCriteria> sortCriteriaList = new ArrayList<>();
 
+        private List<FilterCriteria> filterCriteriaList = new ArrayList<>();
+
         public Long getStart() {
             return start;
         }
@@ -321,6 +491,14 @@ public class PaginationContext {
 
         public void setSortCriteriaList(List<SortCriteria> sortCriteriaList) {
             this.sortCriteriaList = sortCriteriaList;
+        }
+
+        public List<FilterCriteria> getFilterCriteriaList() {
+            return filterCriteriaList;
+        }
+
+        public void setFilterCriteriaList(List<FilterCriteria> filterCriteriaList) {
+            this.filterCriteriaList = filterCriteriaList;
         }
 
         @Override
@@ -369,6 +547,77 @@ public class PaginationContext {
                 + "isAsc=" + isAsc
                 + ", fieldName='" + fieldName + '\''
                 + '}';
+        }
+    }
+
+    /**
+     * This is used by the {@link QueryRequest} to store information about filtering.
+     */
+    public static class FilterCriteria {
+        private String filedName;
+
+        private FilterOperator filterOperator;
+
+        private String value;
+
+        public String getFiledName() {
+            return filedName;
+        }
+
+        public void setFiledName(String filedName) {
+            this.filedName = filedName;
+        }
+
+        public FilterOperator getFilterOperator() {
+            return filterOperator;
+        }
+
+        public void setFilterOperator(FilterOperator filterOperator) {
+            this.filterOperator = filterOperator;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+
+    public enum FilterOperator {
+        EQUALS("="),
+        EQUALS_OR_LESS("<="),
+        EQUALS_OR_LARGER(">="),
+        NOT_EQUALS("<>"),
+        CONTAINS("C"),
+        IS_NULL("N"),
+        IS_NOT_NULL("NN");
+
+        private String symbol;
+
+        private static Map<String, FilterOperator> FILTER_TYPE_MAP = new HashMap<>();
+
+        static {
+            FILTER_TYPE_MAP.put("=", FilterOperator.EQUALS);
+            FILTER_TYPE_MAP.put("<=", FilterOperator.EQUALS_OR_LESS);
+            FILTER_TYPE_MAP.put(">=", FilterOperator.EQUALS_OR_LARGER);
+            FILTER_TYPE_MAP.put("<>", FilterOperator.NOT_EQUALS);
+            FILTER_TYPE_MAP.put("C", FilterOperator.CONTAINS);
+            FILTER_TYPE_MAP.put("N", FilterOperator.IS_NULL);
+            FILTER_TYPE_MAP.put("NN", FilterOperator.IS_NOT_NULL);
+        }
+
+        private FilterOperator(String symbol) {
+            this.symbol = symbol;
+        }
+
+        public String getSymbol() {
+            return this.symbol;
+        }
+
+        public static FilterOperator getFilterOperatorBySymbol(String symbol) {
+            return FILTER_TYPE_MAP.get(symbol);
         }
     }
 
