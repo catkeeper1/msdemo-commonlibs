@@ -12,7 +12,7 @@
     <artifactId>db-access</artifactId>
 
     <properties>
-        <msdemo.skipReportGen>false</msdemo.skipReportGen>
+        <msdemo.skipReportGen>true</msdemo.skipReportGen>
         <testcase.groups>
             org.ckr.msdemo.utility.annotation.MockedTest
             ,org.ckr.msdemo.utility.annotation.DbUnitTest

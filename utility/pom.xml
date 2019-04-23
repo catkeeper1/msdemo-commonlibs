@@ -10,7 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>utility</artifactId>
+    <properties>
+        <msdemo.skipReportGen>true</msdemo.skipReportGen>
 
+    </properties>
     <!-- in this module, all dependencies should be in "provided" scope. The reason is we should not force all other
     modules that use this utility module include all it's dependencies. For example, there are 10 classes in this
     utility module. The 1st class need to be compiled with Hibernate API. There is another module A. The module A need
