@@ -4,18 +4,14 @@ import org.ckr.msdemo.pagination.PaginationContext.QueryRequest;
 import org.ckr.msdemo.pagination.PaginationContext.QueryResponse;
 import org.ckr.msdemo.pagination.PaginationContext.SortCriteria;
 import org.ckr.msdemo.util.DbAccessUtil;
-import org.ckr.msdemo.util.TransactionInfoHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.interceptor.TransactionAttribute;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 /**
  * Implement pagination query base on JPA.
@@ -154,7 +150,7 @@ public class JpaRestPaginationService {
         doQueryTotalNoRecords(response, resultList.size(), queryRequest, queryStr, params);
         PaginationContext.setResponseInfo(response.getStart(), response.getEnd(), response.getTotal());
 
-        TransactionAttribute att = TransactionInfoHolder.getTransactionAttribute();
+        //TransactionAttribute att = TransactionInfoHolder.getTransactionAttribute();
 
         return resultList;
     }
