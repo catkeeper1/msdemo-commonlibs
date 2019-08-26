@@ -1,5 +1,3 @@
-package org.ckr.msdemo.exception;
-
 /**
  * Include classes for exception handling.
  *
@@ -30,3 +28,4 @@ package org.ckr.msdemo.exception;
  * service thrown exception.
  *
  */
+package org.ckr.msdemo.exception;

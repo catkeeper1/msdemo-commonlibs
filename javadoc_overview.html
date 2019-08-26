@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF">
+<h2>Introduction</h2>
+ "Micro-Service Demo" is a set of executable processes that are used to illustrate how to implements applications
+in micro-service architecture. This document is used to illustrate the technical design of micro-services.
+<p>
+<h2>Scope</h2>
+This document only include some java classes that will be shared by other micro-services processes. Below
+packages are covered: <br>
+<table width="100%" align="left" border="1"  cellpadding="3" cellspacing="2">
+  <tr><th bgcolor="#DDDDDD">Package</th><th bgcolor="#DDDDDD">Description</th> </tr>
+  <tr>
+    <td>
+    {@link org.ckr.msdemo.dao Dao}
+    </td>
+    <td>Include classes that are used to implement data access objects.</td>
+  </tr>
+  <tr>
+    <td>
+      {@link org.ckr.msdemo.exception Exceptions}
+    </td>
+    <td>Include classes for exception handling</td>
+  </tr>
+  <tr>
+    <td>
+      {@link org.ckr.msdemo.entity Entity}
+    </td>
+    <td>
+    Include classes that are shared by JPA classes. For example, listener that is used to
+    update the last update timestamp for each JPA entity.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      {@link org.ckr.msdemo.pagination Pagination}
+    </td>
+    <td>Include classes that can be used to implement server side inquiry pagination.</td>
+  </tr>
+
+</table>
+<br>
+<p>
+
+
+
+<!-- NEWPAGE -->
+
+
+
+</body>
+</html>
