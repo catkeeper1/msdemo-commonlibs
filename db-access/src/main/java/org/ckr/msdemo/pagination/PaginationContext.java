@@ -280,7 +280,7 @@ public class PaginationContext {
 
         LOG.debug("parseFilterBy(). filterByStr = {}", filterByStr);
 
-        StringTokenizer tokenizer = new StringTokenizer(filterByStr, ",");
+        //StringTokenizer tokenizer = new StringTokenizer(filterByStr, ",");
 
         List<String> criteriaStrList = splitFilterString(filterByStr);
 
@@ -357,7 +357,7 @@ public class PaginationContext {
 
         while (end < totalLength) {
 
-            char curChar = filterByStr.charAt(end);
+            //char curChar = filterByStr.charAt(end);
 
             if (isDelim(filterByStr, end)) {
 

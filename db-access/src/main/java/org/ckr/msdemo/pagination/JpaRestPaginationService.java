@@ -154,7 +154,7 @@ public class JpaRestPaginationService {
         doQueryTotalNoRecords(response, resultList.size(), queryRequest, queryStr, params);
         PaginationContext.setResponseInfo(response.getStart(), response.getEnd(), response.getTotal());
 
-        TransactionAttribute att = TransactionInfoHolder.getTransactionAttribute();
+        //TransactionAttribute att = TransactionInfoHolder.getTransactionAttribute();
 
         return resultList;
     }
@@ -268,7 +268,7 @@ public class JpaRestPaginationService {
 
         int start = queryStr.indexOf("(");
 
-        int end = queryStr.indexOf(")");
+        int end = queryStr.lastIndexOf(")");
 
         int fromIndex;
 
