@@ -1,5 +1,7 @@
 package org.ckr.msdemo.exception.valueobject;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.ckr.msdemo.exception.ApplicationException;
 
 import java.io.Serializable;
@@ -15,6 +17,7 @@ import java.util.List;
  * For the json message format for exception handling, please refer all get methods in this class and
  * {@link ErrorMessage}.
  */
+@ApiModel(value =  "ErrorResponse", description = "The data model for exception message")
 public class ErrorResponse implements Serializable {
 
 
@@ -23,7 +26,8 @@ public class ErrorResponse implements Serializable {
     private String exceptionId;
     private List<ErrorMessage> messageList;
 
-
+    @ApiModelProperty(value = "For every instance of exception, a unique ID is generated. This ID is used to " +
+    "trace detail error message in log.")
     public String getExceptionId() {
         return exceptionId;
     }
