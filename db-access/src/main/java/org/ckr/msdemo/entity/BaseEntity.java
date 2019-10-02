@@ -12,7 +12,7 @@ import javax.persistence.Version;
 /**
  * The base class for other JPA entity.
  *
- * <p> Most of the JPA entity class should use this class as parent class. When this class is used as parent class, the
+ * <p>Most of the JPA entity class should use this class as parent class. When this class is used as parent class, the
  * entity class will include below features:
  * <ul>
  *     <li> The entity class will have fields for audit trail. Such as who create/update this entity...
@@ -41,6 +41,7 @@ public abstract class BaseEntity implements CreatedByInfo, UpdatedByInfo, Serial
     private Long versionNo;
 
     /**
+     * .
      * @see CreatedByInfo#setCreatedAt(Timestamp)
      */
     @Column(name = "CREATED_AT")
@@ -54,6 +55,7 @@ public abstract class BaseEntity implements CreatedByInfo, UpdatedByInfo, Serial
     }
 
     /**
+     * .
      * @see CreatedByInfo#setCreatedBy(String)
      *
      */
@@ -68,7 +70,7 @@ public abstract class BaseEntity implements CreatedByInfo, UpdatedByInfo, Serial
     }
 
     /**
-     *
+     * .
      * @see CreatedByInfo#setCreatedByDesc(String)
      */
     @Column(name = "CREATED_BY_DESC", length = 200)

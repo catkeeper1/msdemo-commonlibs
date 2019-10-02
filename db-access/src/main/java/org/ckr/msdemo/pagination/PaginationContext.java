@@ -7,9 +7,17 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * Store the pagination request/response info for each HTTP request and its response so that pagination info
@@ -294,7 +302,7 @@ public class PaginationContext {
             }
 
             FilterCriteria filterCriteria = createFilterCriteria(criteriaStr);
-            if(filterCriteria == null) {
+            if (filterCriteria == null) {
                 continue;
             }
 
@@ -312,43 +320,7 @@ public class PaginationContext {
         if (StringUtils.isEmpty(filterByStr)) {
             return result;
         }
-//        StringTokenizer tokenizer = new StringTokenizer(filterByStr, ",",true);
-//
-//
-//        while (tokenizer.hasMoreTokens()) {
-//            StringBuilder oneRecord = new StringBuilder();
-//            String curToken = tokenizer.nextToken();
-//
-//            if (",".equals(curToken)) {
-//                continue;
-//            }
-//
-//            oneRecord.append(curToken);
-//
-//            while (tokenizer.hasMoreTokens()) {
-//
-//                String tmpToken = tokenizer.nextToken();
-//
-//                if (oneRecord.lastIndexOf("\\") == ( oneRecord.length() - 1 )) {
-//                    oneRecord.append(tmpToken);
-//                    continue;
-//                }
-//
-//                if (oneRecord.lastIndexOf(",") == ( oneRecord.length() - 1 )) {
-//                    if (",".equals(tmpToken)) {
-//                        break;
-//                    } else {
-//                        oneRecord.append(tmpToken);
-//                        continue;
-//                    }
-//                }
-//                break;
-//
-//            }
-//            if(oneRecord.length() > 0) {
-//                result.add(oneRecord.toString());
-//            }
-//        }
+
 
         int start = 0;
         int end = 0;
@@ -376,7 +348,7 @@ public class PaginationContext {
         return result;
     }
 
-    static private boolean isDelim(String str, int index) {
+    private static boolean isDelim(String str, int index) {
         if (str.charAt(index) == ',') {
             if (index > 0 && str.charAt(index - 1) == '\\') {
                 return false;
@@ -437,8 +409,8 @@ public class PaginationContext {
 
     /**
      * This is used to store the query raw data(the range of records that should be returned).
-     * {@link PaginationContext#parseRestPaginationParameters()} extract query data from HTTP request objects and store in a object of this
-     * class. When developers implement , they just need to get the
+     * {@link PaginationContext#parseRestPaginationParameters()} extract query data from HTTP request objects and
+     * store in a object of this class. When developers implement , they just need to get the
      * query raw data from this class but not HTTP request so that it will not coupled with any thing in controller
      * layer.
      */
@@ -640,6 +612,8 @@ public class PaginationContext {
         private Long start;
 
         /**
+         * This is used to store the index of the first record should be retrieved for this query.
+         *
          * @see QueryResponse#start
          */
         private Long end;

@@ -7,11 +7,13 @@ import org.ckr.msdemo.util.DbAccessUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 
 /**
  * Implement pagination query base on JPA.
@@ -67,7 +69,7 @@ public class JpaRestPaginationService {
     private static String adjustQueryString(String ql, Map<String, Object> params) {
 
 
-        return DbAccessUtil.adjustDynamicQueryString(ql, params != null ? params.keySet() : null);
+        return DbAccessUtil.adjustDynamicQueryString(ql, params == null ? null : params.keySet());
 
     }
 
@@ -218,11 +220,12 @@ public class JpaRestPaginationService {
         if (request.getStart() == null) {
             request.setStart((long) 0);
         }
-        if (maxNoRecordsPerPage != null) {
-            if (request.getEnd() == null || request.getEnd() - request.getStart() > maxNoRecordsPerPage - 1) {
-                //make sure the total number records will not exceed the maxNoRecordPerPage
-                request.setEnd(request.getStart() + maxNoRecordsPerPage - 1);
-            }
+        if (maxNoRecordsPerPage != null
+            && (request.getEnd() == null || request.getEnd() - request.getStart() > maxNoRecordsPerPage - 1)) {
+
+            //make sure the total number records will not exceed the maxNoRecordPerPage
+            request.setEnd(request.getStart() + maxNoRecordsPerPage - 1);
+
         }
 
         return request;
@@ -259,7 +262,7 @@ public class JpaRestPaginationService {
 
         String result;
 
-        String upperQueryStr = queryStr.toUpperCase();
+        String upperQueryStr = queryStr.toUpperCase(Locale.ENGLISH);
 
 
         int start = queryStr.indexOf("(");
@@ -270,26 +273,30 @@ public class JpaRestPaginationService {
 
         int queryStrLen = queryStr.length() - 1;
 
+        boolean goToNext = true;
+
         do {
             if (queryStrLen < 0) {
-                LOG.info("cannot find a top level 'FROM' from query string: '"
-                    + queryStr + "' . The i is < 0 already");
+                LOG.info("cannot find a top level 'FROM' from query string: '{}' . The i is < 0 already", queryStr);
             }
 
             fromIndex = upperQueryStr.lastIndexOf("FROM", queryStrLen);
             if (fromIndex < 0) {
-                LOG.info("cannot find a top level 'FROM' from query string: '"
-                    + queryStr + "' . Cannot find 'FROM'. The i = " + queryStrLen);
+                LOG.info("cannot find a top level 'FROM' from query string: '{}' . Cannot find 'FROM'. The i = {}"
+                        ,queryStr
+                        ,queryStrLen);
             }
+
+
 
             if (fromIndex <= end && fromIndex >= start) {
                 queryStrLen = fromIndex - 1;
             } else {
-                break;
+                goToNext = false;
             }
 
         }
-        while (true);
+        while (goToNext);
 
         result = "SELECT COUNT(*) " + queryStr.substring(fromIndex);
 

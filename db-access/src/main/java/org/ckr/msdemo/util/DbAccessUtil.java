@@ -3,7 +3,6 @@ package org.ckr.msdemo.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.Query;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +10,8 @@ import java.util.StringTokenizer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.persistence.Query;
+
 
 /**
  * A util class for query string processing.
@@ -45,7 +46,7 @@ public class DbAccessUtil {
      *     </code>
      * </pre>
      *
-     * This feature is very useful for the dynamic query scenario.
+     * <p>This feature is very useful for the dynamic query scenario.
      *
      * @param ql    query string that will be adjusted
      * @param paramNames inject params to ql

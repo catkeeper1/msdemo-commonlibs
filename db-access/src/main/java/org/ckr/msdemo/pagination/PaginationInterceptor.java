@@ -45,7 +45,7 @@ public class PaginationInterceptor implements HandlerInterceptor {
      * </a> to understand about why this method cannot be used to modify HTTP response header to return pagination
      * response info.
      *
-     * <p> For the reason above, {@link RestPaginationResponseAdvice} should be used to return pagination response info
+     * <p>For the reason above, {@link RestPaginationResponseAdvice} should be used to return pagination response info
      * to HTTP client.
      *
      * @param request      HttpServletRequest

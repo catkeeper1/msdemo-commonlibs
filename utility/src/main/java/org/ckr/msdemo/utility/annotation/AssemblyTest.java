@@ -1,6 +1,5 @@
 package org.ckr.msdemo.utility.annotation;
 
-
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 

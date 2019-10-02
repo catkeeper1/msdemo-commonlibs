@@ -1,13 +1,15 @@
 package org.ckr.msdemo.dao;
 
 import org.ckr.msdemo.util.DbAccessUtil;
+import org.springframework.beans.factory.BeanCreationException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 
 /**
  * The parent class for all JPA Dao.
@@ -37,7 +39,7 @@ public class BaseJpaDao {
 
     private EntityManager getEntityManager() {
         if (entityManager == null) {
-            throw new RuntimeException("entity manager is not initialized. "
+            throw new BeanCreationException("entity manager is not initialized. "
                                       + "Please use setEntityManager() method to inject an entity manager.");
         }
 
@@ -70,8 +72,7 @@ public class BaseJpaDao {
         DbAccessUtil.setQueryParameter(query, params);
 
         List rawResultList = query.getResultList();
-        List<T> resultList = DbAccessUtil.convertRawListToTargetList(rawResultList, mapper);
+        return DbAccessUtil.convertRawListToTargetList(rawResultList, mapper);
 
-        return resultList;
     }
 }

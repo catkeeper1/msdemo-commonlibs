@@ -1,9 +1,10 @@
 package org.ckr.msdemo.exception;
 
-import java.util.List;
+
 
 /**
- * Created by Administrator on 2017/8/12.
+ * The application exception that is used for re-throwning when the exception is transferred through remote
+ * call.
  */
 public class ReThrownApplicationException extends ApplicationException {
 

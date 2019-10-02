@@ -16,6 +16,7 @@ public class AuditEntityListener {
      * properly.
      */
     public AuditEntityListener() {
+        super();
     }
 
     /**
@@ -29,11 +30,11 @@ public class AuditEntityListener {
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
-        if(entity instanceof CreatedByInfo) {
+        if (entity instanceof CreatedByInfo) {
             setCreatedByInfo((CreatedByInfo) entity, now);
         }
 
-        if(entity instanceof UpdatedByInfo) {
+        if (entity instanceof UpdatedByInfo) {
             setUpdatedByInfo((UpdatedByInfo) entity, now);
         }
 

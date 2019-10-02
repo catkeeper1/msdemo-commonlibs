@@ -22,8 +22,6 @@ public class RestPaginationResponseAdvice implements ResponseBodyAdvice<Object> 
      * Indicate whether the
      * {@link #beforeBodyWrite(Object, MethodParameter, MediaType, Class, ServerHttpRequest, ServerHttpResponse)}
      * method should be called for a HTTP response.
-     * @param returnType
-     * @param converterType
      * @return Return true if {@link PaginationContext#getQueryResponse()} is not null. Else, return false.
      */
     @Override
@@ -34,18 +32,12 @@ public class RestPaginationResponseAdvice implements ResponseBodyAdvice<Object> 
     /**
      * Call {@link PaginationContext#setRestPaginationResponse(ServerHttpResponse)} to modify HTTP response header
      * to return pagination response info to HTTP client.
-     * @param body
-     * @param returnType
-     * @param selectedContentType
-     * @param selectedConverterType
-     * @param request
-     * @param response
      * @return just return parameter body.
      */
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                   Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-
+        LOG.debug("beforeBodyWrite");
         PaginationContext.setRestPaginationResponse(response);
 
         return body;

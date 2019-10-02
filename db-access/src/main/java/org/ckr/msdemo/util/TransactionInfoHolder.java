@@ -21,7 +21,7 @@ public class TransactionInfoHolder extends TransactionAspectSupport {
     public static final TransactionAttribute getTransactionAttribute() {
         TransactionInfo info = currentTransactionInfo();
 
-        if(info == null) {
+        if (info == null) {
             return null;
         }
 

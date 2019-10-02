@@ -63,10 +63,15 @@ public class BaseException extends RuntimeException {
             return;
         }
 
-        exceptionId = generateExceptionID();
+        exceptionId = generateExceptionId();
     }
 
-    public static String generateExceptionID() {
+    /**
+     * Generate a unique ID for an instance of Exception.
+     * This exception ID can be used to trace the exception stack in application log.
+     * @return An unique ID for a exception.
+     */
+    public static String generateExceptionId() {
         DateFormat format = new SimpleDateFormat("yyMMddkkmmssSSS");
         StringBuilder buffer = new StringBuilder();
 

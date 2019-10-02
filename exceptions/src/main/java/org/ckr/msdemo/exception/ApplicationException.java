@@ -123,6 +123,7 @@ public class ApplicationException extends BaseException {
      * @param msgCode The message code which is used to retrive message from messageSource for i18n. It is also can
      *                be used to indicate the error.
      * @param params  The values for parameters inside the message template.
+     * @return       Return this object.
      */
     public final ApplicationException addMessage(String msgCode, Object... params) {
 
@@ -186,7 +187,7 @@ public class ApplicationException extends BaseException {
 
         Thread.currentThread().getStackTrace();
 
-        if(!this.messageList.isEmpty()) {
+        if (!this.messageList.isEmpty()) {
             this.stackWhenThrown = Thread.currentThread().getStackTrace();
             throw this;
         }
@@ -218,7 +219,7 @@ public class ApplicationException extends BaseException {
          * @param code The message code that will be used to retrieve user message from messageSource object.
          * @param params  The values of parameters of the message template.
          */
-        public ExceptionMessage(String code, Object[] params) {
+        public ExceptionMessage(String code, Object... params) {
             this.messageCode = code;
             if (params != null && params.length > 0) {
                 this.messageParams = new Object[params.length];
@@ -275,13 +276,19 @@ public class ApplicationException extends BaseException {
 
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ExceptionMessage that = (ExceptionMessage) o;
-            return Objects.equals(messageCode, that.messageCode) &&
-                    Arrays.equals(messageParams, that.messageParams) &&
-                    Objects.equals(message, that.message);
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+
+            ExceptionMessage that = (ExceptionMessage) obj;
+            return Objects.equals(messageCode, that.messageCode)
+                   && Arrays.equals(messageParams, that.messageParams)
+                   && Objects.equals(message, that.message);
         }
 
         @Override

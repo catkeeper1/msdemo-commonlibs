@@ -27,7 +27,7 @@ public class ErrorResponse implements Serializable {
     private List<ErrorMessage> messageList;
 
     @ApiModelProperty(value = "For every instance of exception, a unique ID is generated. This ID is used to " +
-    "trace detail error message in log.")
+        "trace detail error message in log.")
     public String getExceptionId() {
         return exceptionId;
     }
@@ -88,15 +88,18 @@ public class ErrorResponse implements Serializable {
         }
 
         /**
-         * @see ApplicationException.ExceptionMessage#getMessageCode()
+         * The code that identify a message.
          * Because this message code can be used by client side program to identify what kind of application exception
          *     is thrown so that it is expected to be included in the response as well.
+         * @return    The message code.
+         * @see ApplicationException.ExceptionMessage#getMessageCode()
          */
         public String getMessageCode() {
             return messageCode;
         }
 
         /**
+         * @return   The message that will be shown to end user.
          * @see ApplicationException.ExceptionMessage#getMessage()
          */
         public String getMessage() {

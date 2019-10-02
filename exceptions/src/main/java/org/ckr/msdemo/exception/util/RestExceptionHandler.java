@@ -7,7 +7,6 @@ import org.ckr.msdemo.exception.valueobject.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.context.support.AbstractMessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import java.util.ArrayList;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
@@ -88,8 +86,8 @@ public final class RestExceptionHandler {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         Locale locale = RequestContextUtils.getLocale(httpRequest);
 
-        if(exp instanceof AccessDeniedException) {
-            return handleAccessDeniedException((AccessDeniedException) exp, locale);
+        if (exp instanceof AccessDeniedException) {
+            return handleAccessDeniedException(locale);
         }
 
         BaseException be = null;
@@ -128,11 +126,19 @@ public final class RestExceptionHandler {
 
     }
 
+    /**
+     * Update message content in {@link ErrorResponse} base on message info in an {@link ApplicationException}.
+     *
+     * @param errorResponse     The error response object that will be updated.
+     * @param appExp            The application exception that include the error message info
+     * @param messageSource     The message source that include the actual message stored in property file.
+     * @param locale            The locale that will be used to retrieve message from messageSource.
+     */
     public static void updateMsgForResponse(ErrorResponse errorResponse,
                                             ApplicationException appExp,
                                             MessageSource messageSource,
                                             Locale locale) {
-        ArrayList<String> msgList = new ArrayList<>(appExp.getMessageList().size());
+
 
         for (int i = 0; i < appExp.getMessageList().size(); i++) {
             ApplicationException.ExceptionMessage expMsg = appExp.getMessageList().get(i);
@@ -155,13 +161,13 @@ public final class RestExceptionHandler {
 
     }
 
-    private static ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ae, Locale locale) {
+    private static ResponseEntity<ErrorResponse> handleAccessDeniedException(Locale locale) {
 
         String msg = exceptionMsgSource.getMessage("org.ckr.msdemo.exception.access_denied",
                                       null,
                                       locale);
         ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setExceptionId(BaseException.generateExceptionID());
+        errorResponse.setExceptionId(BaseException.generateExceptionId());
         errorResponse.addMessage("access_denied", msg);
 
         return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
