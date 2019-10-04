@@ -4,7 +4,7 @@ package org.ckr.msdemo.pagination;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -19,15 +19,19 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 
 /**
- * Created by Administrator on 10/4/2019.
+ * This is an example about powermock usage.
+ *
+ * In this class RequestContextHolder.class and ServletRequestAttributes.class were put into annotation PrepareForTest
+ * because the static method in RequestContextHolder.class is mocked and final method in ServletRequestAttributes.class
+ * is mocked.
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({RequestContextHolder.class, ServletRequestAttributes.class})
@@ -40,10 +44,10 @@ public class PaginationContextMOMockedTests {
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
-        PowerMockito.mockStatic(RequestContextHolder.class);
+        mockStatic(RequestContextHolder.class);
 
-        servletRequestAttributes = PowerMockito.mock(ServletRequestAttributes.class);
-        httpServletRequest = PowerMockito.mock(HttpServletRequest.class);
+        servletRequestAttributes = mock(ServletRequestAttributes.class);
+        httpServletRequest = mock(HttpServletRequest.class);
     }
 
     @Test
