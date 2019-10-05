@@ -43,7 +43,7 @@ public class PaginationContextMOMockedTests {
 
     @Before
     public void before() {
-        MockitoAnnotations.initMocks(this);
+        //MockitoAnnotations.initMocks(this);
         mockStatic(RequestContextHolder.class);
 
         servletRequestAttributes = mock(ServletRequestAttributes.class);

@@ -3,6 +3,7 @@
 *.iml
 
 /src/*
+!/src/site
 
 exceptions/target
 db-access/target
